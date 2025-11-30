@@ -1,4 +1,4 @@
-# 🚀 Guía de Contribución
+#  Guía de Contribución
 
 ¡Bienvenido al equipo! Este documento define cómo trabajamos juntos para mantener el código ordenado, evitar conflictos y asegurarnos de que el proyecto escale sin problemas.
 
@@ -6,7 +6,7 @@ Como somos un equipo ágil, la comunicación es clave, pero seguir estas reglas 
 
 ---
 
-## 🌳 Estrategia de Ramas (Git Flow Simplificado)
+##  Estrategia de Ramas (Git Flow Simplificado)
 
 Tenemos dos ramas principales que son permanentes:
 
@@ -23,7 +23,7 @@ Cuando crees una rama nueva para trabajar, usa estos prefijos:
 
 ---
 
-## ⚡ Flujo de Trabajo Diario (The Workflow)
+## Flujo de Trabajo Diario (The Workflow)
 
 Sigue estos 6 pasos **siempre** que empieces una tarea nueva:
 
