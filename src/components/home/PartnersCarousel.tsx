@@ -35,7 +35,7 @@ function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
 
     return (
         <div
-            className="group/logo mx-8 md:mx-12 w-24 md:w-32 h-16 md:h-20 relative inline-flex items-center justify-center cursor-pointer select-none"
+            className="group/logo mx-12 md:mx-16 w-40 md:w-52 h-24 md:h-28 relative inline-flex items-center justify-center cursor-pointer select-none"
             onDragStart={(e) => e.preventDefault()} // Prevent default image drag behavior
         >
             {/* Spotlight Glow Effect */}
@@ -46,7 +46,7 @@ function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
                 <div className="absolute inset-0 bg-white/5 animate-pulse rounded-lg" />
             )}
 
-            <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-110 ${isLoading ? 'opacity-0' : 'grayscale opacity-50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100'}`}>
+            <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-105 ${isLoading ? 'opacity-0' : 'opacity-80 group-hover/logo:opacity-100'}`}>
                 <Image
                     src={partner.logo}
                     alt={partner.name}
