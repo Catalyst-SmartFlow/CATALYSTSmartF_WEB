@@ -3,7 +3,7 @@ import PartnersCarousel from "@/components/home/PartnersCarousel";
 import Mission from "@/components/home/Mission";
 import Vision from "@/components/home/Vision";
 import ServicesTeaser from "@/components/home/ServicesTeaser";
-import Footer from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer"; // Asegúrate de tener este archivo creado
 
 export default function Home() {
     return (
@@ -12,7 +12,6 @@ export default function Home() {
             <PartnersCarousel />
             <Mission />
             <Vision />
-            <ServicesTeaser />
             <Footer />
         </main>
     );
