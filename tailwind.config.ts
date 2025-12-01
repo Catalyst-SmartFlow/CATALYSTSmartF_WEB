@@ -66,10 +66,15 @@ const config: Config = {
                 "0%": { transform: "translateX(100%)" },
                 "100%": { transform: "translateX(0%)" },
             },
+            shimmer: {
+                "0%, 100%": { backgroundPosition: "-200% 0" },
+                "50%": { backgroundPosition: "200% 0" },
+            },
         },
         animation: {
             marquee: "marquee 25s linear infinite",
             marquee2: "marquee2 25s linear infinite",
+            shimmer: "shimmer 8s ease-in-out infinite",
         },
     },
     plugins: [require("tailwindcss-animate")],
