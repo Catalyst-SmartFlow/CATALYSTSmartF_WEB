@@ -3,11 +3,8 @@
 import { useRef } from "react";
 import {
     motion,
-    useScroll,
-    useSpring,
-    useTransform,
     useMotionValue,
-    useVelocity,
+    useTransform,
     useAnimationFrame,
 } from "framer-motion";
 import Image from "next/image";
@@ -17,6 +14,8 @@ const wrap = (min: number, max: number, v: number) => {
     const rangeSize = max - min;
     return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
 };
+
+import { useState } from "react";
 
 const partners = [
     { name: "Espiral Edu", logo: "/partners/EspiralEdu.png" },
@@ -31,17 +30,47 @@ const partners = [
     { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg" },
 ];
 
+function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
+    const [isLoading, setIsLoading] = useState(true);
+
+    return (
+        <div
+            className="group/logo mx-8 md:mx-12 w-24 md:w-32 h-16 md:h-20 relative inline-flex items-center justify-center cursor-pointer select-none"
+            onDragStart={(e) => e.preventDefault()} // Prevent default image drag behavior
+        >
+            {/* Spotlight Glow Effect */}
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-500" />
+
+            {/* Skeleton Loader */}
+            {isLoading && (
+                <div className="absolute inset-0 bg-white/5 animate-pulse rounded-lg" />
+            )}
+
+            <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-110 ${isLoading ? 'opacity-0' : 'grayscale opacity-50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100'}`}>
+                <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    fill
+                    className="object-contain p-2 drop-shadow-lg"
+                    onLoad={() => setIsLoading(false)}
+                    draggable={false}
+                />
+            </div>
+
+            {/* Tooltip */}
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div className="bg-zinc-900 text-white text-[10px] uppercase tracking-widest font-medium px-2 py-1 rounded border border-white/10 shadow-xl whitespace-nowrap">
+                    {partner.name}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 function ParallaxText({ children, baseVelocity = 100 }: { children: React.ReactNode; baseVelocity: number }) {
     const baseX = useMotionValue(0);
-    const { scrollY } = useScroll();
-    const scrollVelocity = useVelocity(scrollY);
-    const smoothVelocity = useSpring(scrollVelocity, {
-        damping: 50,
-        stiffness: 400,
-    });
-    const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
-        clamp: false,
-    });
+
+    // Removed scroll velocity logic for constant speed
 
     const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
 
@@ -50,38 +79,59 @@ function ParallaxText({ children, baseVelocity = 100 }: { children: React.ReactN
     // Speed control refs
     const hoverSpeedFactor = useRef<number>(1);
     const targetSpeedFactor = useRef<number>(1);
+    const isDragging = useRef<boolean>(false);
+    const lastPointerX = useRef<number>(0);
 
     useAnimationFrame((t, delta) => {
+        if (isDragging.current) return; // Pause auto-scroll while dragging
+
         // Smoothly interpolate current speed factor to target
-        // If target is 0.1 (hover), we move towards it. If 1 (no hover), we move back.
-        const approachRate = 0.05; // Adjust for smoothness of slowdown/speedup
+        const approachRate = 0.05;
         hoverSpeedFactor.current =
             hoverSpeedFactor.current + (targetSpeedFactor.current - hoverSpeedFactor.current) * approachRate;
 
         let moveBy = directionFactor.current * baseVelocity * (delta / 1000) * hoverSpeedFactor.current;
 
-        /**
-         * This is what changes the direction of the scroll once we
-         * switch scrolling directions.
-         */
-        if (velocityFactor.get() < 0) {
-            directionFactor.current = -1;
-        } else if (velocityFactor.get() > 0) {
-            directionFactor.current = 1;
-        }
-
-        moveBy += directionFactor.current * moveBy * velocityFactor.get();
-
         baseX.set(baseX.get() + moveBy);
     });
 
+    const handlePointerDown = (e: React.PointerEvent) => {
+        isDragging.current = true;
+        lastPointerX.current = e.clientX;
+        // Capture pointer to ensure we receive events even if mouse leaves the element
+        (e.target as Element).setPointerCapture(e.pointerId);
+    };
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (!isDragging.current) return;
+
+        const deltaX = e.clientX - lastPointerX.current;
+        lastPointerX.current = e.clientX;
+
+        // Adjust sensitivity here. Reduced to 0.01 for finer control.
+        baseX.set(baseX.get() + deltaX * 0.01);
+    };
+
+    const handlePointerUp = (e: React.PointerEvent) => {
+        isDragging.current = false;
+        (e.target as Element).releasePointerCapture(e.pointerId);
+    };
+
     return (
         <div
-            className="parallax overflow-hidden flex flex-nowrap m-0 whitespace-nowrap"
-            onMouseEnter={() => { targetSpeedFactor.current = 0.1; }} // Slow down to 10% speed
-            onMouseLeave={() => { targetSpeedFactor.current = 1; }}   // Resume full speed
+            className="parallax overflow-hidden flex flex-nowrap m-0 whitespace-nowrap cursor-grab active:cursor-grabbing touch-pan-y"
+            onMouseEnter={() => { targetSpeedFactor.current = 0.1; }}
+            onMouseLeave={() => { targetSpeedFactor.current = 1; }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            onPointerLeave={handlePointerUp}
         >
-            <motion.div className="scroller flex flex-nowrap whitespace-nowrap" style={{ x }}>
+            <motion.div
+                className="scroller flex flex-nowrap whitespace-nowrap"
+                style={{ x }}
+            >
                 {children}
                 {children}
                 {children}
@@ -93,29 +143,11 @@ function ParallaxText({ children, baseVelocity = 100 }: { children: React.ReactN
 
 export default function PartnersCarousel() {
     return (
-        <section className="w-full py-20 bg-black overflow-hidden relative z-10 border-y border-white/10">
-            <div className="container mx-auto px-4 mb-12 text-center">
-                <p className="text-sm text-gray-400 uppercase tracking-widest font-medium">
-                    Empresas visionarias que confían en nuestra tecnología
-                </p>
-            </div>
-
+        <section className="w-full py-10 bg-black overflow-hidden relative z-10 border-y border-white/5">
             <div className="relative flex overflow-x-hidden group [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
-                <ParallaxText baseVelocity={-1}>
+                <ParallaxText baseVelocity={-0.5}>
                     {partners.map((partner, index) => (
-                        <div
-                            key={`p-${index}`}
-                            className="mx-8 md:mx-12 w-32 md:w-40 h-16 md:h-20 relative inline-flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500 cursor-pointer"
-                        >
-                            <div className="w-full h-full relative flex items-center justify-center transform hover:scale-110 transition-transform duration-300">
-                                <Image
-                                    src={partner.logo}
-                                    alt={partner.name}
-                                    fill
-                                    className="object-contain p-2"
-                                />
-                            </div>
-                        </div>
+                        <PartnerLogo key={`p-${index}`} partner={partner} />
                     ))}
                 </ParallaxText>
             </div>
