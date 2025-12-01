@@ -1,14 +1,26 @@
 import Hero from "@/components/home/Hero";
 import PartnersCarousel from "@/components/home/PartnersCarousel";
-import ServicesTeaser from "@/components/home/ServicesTeaser";
-import Footer from "@/components/layout/Footer"; // Asegúrate de tener este archivo creado
+import StickyScrollFeatures from "@/components/home/StickyScrollFeatures";
+import MobileFeatures from "@/components/home/MobileFeatures";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
     return (
         <main className="flex min-h-screen flex-col bg-black">
             <Hero />
-            <PartnersCarousel />
-            <ServicesTeaser /> {/* Bento Grid subido aquí para mayor impacto */}
+
+            {/* Sección de Logos con Título */}
+            <div className="py-10 border-b border-white/5">
+                <p className="text-center text-zinc-600 text-sm mb-8 uppercase tracking-widest">EMPRESAS QUE AUTOMATIZAN CON NOSOTROS</p>
+                <PartnersCarousel />
+            </div>
+
+            {/* Sección de Features (Desktop) */}
+            <StickyScrollFeatures />
+
+            {/* Sección de Features (Mobile) */}
+            <MobileFeatures />
+
             <Footer />
         </main>
     );
