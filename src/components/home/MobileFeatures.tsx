@@ -31,7 +31,7 @@ const content = [
     },
     {
         title: "Catalyst Ops",
-        subtitle: "La magia invisible (n8n)",
+        subtitle: "La magia invisible",
         description:
             "Sincronización pura. Si alguien compra en tu web, generamos la factura y notificamos a tu equipo en Slack automáticamente. Sin intervención humana.",
         tags: ["Automatización n8n", "Conexión CRM", "Facturación Auto"],

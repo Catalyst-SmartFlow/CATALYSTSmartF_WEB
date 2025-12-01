@@ -189,7 +189,7 @@ const content = [
     {
         id: "ops",
         title: "Catalyst Ops",
-        subtitle: "La magia invisible (n8n)",
+        subtitle: "La magia invisible",
         description: "Orquestación de procesos. Detectamos la factura de tu sistema (SRI/ERP) y la enviamos automáticamente al correo del cliente y a tu equipo en Slack. Cero tareas manuales.",
         icon: Zap,
         color: "from-blue-500 to-cyan-500",
