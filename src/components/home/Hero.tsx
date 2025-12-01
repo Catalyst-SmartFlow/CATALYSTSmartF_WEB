@@ -1,12 +1,44 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import Scene from "./Scene";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, MouseEvent } from "react";
 
 const words = ["Resultados", "Eficiencia", "Innovación", "Futuro"];
+
+function MagneticButton({ children }: { children: React.ReactNode }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+        const { clientX, clientY } = e;
+        const { height, width, left, top } = ref.current!.getBoundingClientRect();
+        const middleX = clientX - (left + width / 2);
+        const middleY = clientY - (top + height / 2);
+        x.set(middleX * 0.02); // Further reduced magnetic strength
+        y.set(middleY * 0.03);
+    };
+
+    const handleMouseLeave = () => {
+        x.set(0);
+        y.set(0);
+    };
+
+    return (
+        <motion.div
+            ref={ref}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ x, y }}
+            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+        >
+            {children}
+        </motion.div>
+    );
+}
 
 export default function Hero() {
     const [index, setIndex] = useState(0);
@@ -19,7 +51,9 @@ export default function Hero() {
     }, []);
 
     return (
-        <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-20">
+        <section
+            className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-20 group"
+        >
             {/* Background Elements */}
             <div className="absolute inset-0 -z-10">
                 <Scene />
@@ -35,6 +69,7 @@ export default function Hero() {
                     <rect width="100%" height="100%" filter="url(#noiseFilter)" />
                 </svg>
             </div>
+
 
             {/* Main Content */}
             <div className="z-10 flex flex-col items-center text-center px-4 max-w-6xl mx-auto w-full">
@@ -91,37 +126,44 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-                    className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 relative group"
+                    className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 relative"
                 >
-                    <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
-                    <Button
-                        size="lg"
-                        className="relative h-16 px-10 text-lg bg-black hover:bg-zinc-900 text-white rounded-full font-bold transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/10 w-full sm:w-auto overflow-hidden"
-                    >
-                        <span className="relative z-10 flex items-center">
-                            Comienza Ahora <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </Button>
+                    <MagneticButton>
+                        <div className="relative group">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+                            <Button
+                                size="lg"
+                                className="relative h-16 px-10 text-lg bg-black hover:bg-zinc-900 text-white rounded-full font-bold transition-all border border-white/10 w-full sm:w-auto overflow-hidden"
+                            >
+                                <span className="relative z-10 flex items-center">
+                                    Comienza Ahora <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            </Button>
+                        </div>
+                    </MagneticButton>
                 </motion.div>
 
-                {/* Trust Signals */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 1 }}
-                    className="mt-20 pt-10 border-t border-white/5 w-full max-w-4xl"
-                >
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-6 font-medium">Potenciando empresas innovadoras</p>
-                    <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-                        {/* Placeholders for logos - using text for now but styled like logos */}
-                        <span className="text-lg font-bold text-white/40 flex items-center gap-2"><div className="w-4 h-4 bg-white/40 rounded-full" /> ACME Corp</span>
-                        <span className="text-lg font-bold text-white/40 flex items-center gap-2"><div className="w-4 h-4 bg-white/40 rounded-sm" /> Globex</span>
-                        <span className="text-lg font-bold text-white/40 flex items-center gap-2"><div className="w-4 h-4 bg-white/40 rotate-45" /> Soylent</span>
-                        <span className="text-lg font-bold text-white/40 flex items-center gap-2"><div className="w-4 h-4 bg-white/40 rounded-tr-lg" /> Initech</span>
-                    </div>
-                </motion.div>
+
+
             </div>
+
+            {/* Scroll Indicator */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-zinc-500 pointer-events-none"
+            >
+                <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-medium">Scroll</span>
+                <div className="w-[1px] h-12 bg-zinc-800/50 relative overflow-hidden">
+                    <motion.div
+                        animate={{ top: ["-100%", "100%"] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                        className="absolute w-full h-full bg-gradient-to-b from-transparent via-violet-500 to-transparent"
+                    />
+                </div>
+            </motion.div>
         </section>
     );
 }
