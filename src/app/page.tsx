@@ -11,7 +11,7 @@ export default function Home() {
 
             {/* Sección de Logos con Título */}
             <div className="py-10 border-b border-white/5">
-                <p className="text-center text-zinc-600 text-sm mb-8 uppercase tracking-widest">EMPRESAS QUE AUTOMATIZAN CON NOSOTROS</p>
+                <p className="text-center text-zinc-400 text-sm mb-8 uppercase tracking-widest">EMPRESAS QUE AUTOMATIZAN CON NOSOTROS</p>
                 <PartnersCarousel />
             </div>
 
