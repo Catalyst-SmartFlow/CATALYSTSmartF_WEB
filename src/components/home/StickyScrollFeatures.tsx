@@ -235,7 +235,6 @@ export default function StickyScrollFeatures() {
         target: containerRef,
         offset: ["start start", "end end"],
     });
-
     const headerOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
     const headerScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
     const headerBlur = useTransform(scrollYProgress, [0, 0.1], ["blur(0px)", "blur(10px)"]);
