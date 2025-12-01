@@ -10,6 +10,7 @@ export default function Home() {
         <main className="flex min-h-screen flex-col bg-black">
             <Hero />
             <PartnersCarousel />
+            <ServicesTeaser /> {/* Bento Grid subido aquí para mayor impacto */}
             <Mission />
             <Vision />
             <Footer />
