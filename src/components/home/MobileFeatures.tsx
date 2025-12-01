@@ -24,7 +24,7 @@ const content = [
                     ¡Claro! En Catalyst automatizamos tu crecimiento. ¿Te gustaría ver una demo ahora mismo?
                 </div>
                 <div className="self-start rounded-2xl rounded-tl-none bg-zinc-800 p-3 text-sm text-zinc-300 animate-pulse">
-                    Escribiendo...
+                    Escribiendo
                 </div>
             </div>
         ),
