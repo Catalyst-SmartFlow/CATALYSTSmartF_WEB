@@ -18,16 +18,16 @@ const wrap = (min: number, max: number, v: number) => {
 import { useState } from "react";
 
 const partners = [
-    { name: "Espiral Edu", logo: "/partners/EspiralEdu.png" },
-    { name: "Universidad Indoamérica", logo: "/partners/UniversidadIndoamerica.png" },
-    { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg" },
+    { name: "Espiral Edu", logo: "/partners/EspiralEdu.png", scale: 0.75 },
+    { name: "Universidad Indoamérica", logo: "/partners/UniversidadIndoamerica.png", scale: 1.35 },
+    { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg", scale: 1.25 },
     // Duplicating for marquee effect
-    { name: "Espiral Edu", logo: "/partners/EspiralEdu.png" },
-    { name: "Universidad Indoamérica", logo: "/partners/UniversidadIndoamerica.png" },
-    { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg" },
-    { name: "Espiral Edu", logo: "/partners/EspiralEdu.png" },
-    { name: "Universidad Indoamérica", logo: "/partners/UniversidadIndoamerica.png" },
-    { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg" },
+    { name: "Espiral Edu", logo: "/partners/EspiralEdu.png", scale: 0.75 },
+    { name: "Universidad Indoamérica", logo: "/partners/UniversidadIndoamerica.png", scale: 1.35 },
+    { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg", scale: 1.25 },
+    { name: "Espiral Edu", logo: "/partners/EspiralEdu.png", scale: 0.75 },
+    { name: "Universidad Indoamérica", logo: "/partners/UniversidadIndoamerica.png", scale: 1.35 },
+    { name: "El Nuevo Ecuador", logo: "/partners/el-nuevo-ecuador-logo.svg", scale: 1.25 },
 ];
 
 function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
@@ -35,7 +35,7 @@ function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
 
     return (
         <div
-            className="group/logo mx-12 md:mx-16 w-40 md:w-52 h-24 md:h-28 relative inline-flex items-center justify-center cursor-pointer select-none"
+            className="group/logo mx-8 md:mx-12 w-32 md:w-40 h-20 md:h-24 relative inline-flex items-center justify-center cursor-pointer select-none"
             onDragStart={(e) => e.preventDefault()} // Prevent default image drag behavior
         >
             {/* Spotlight Glow Effect */}
@@ -46,15 +46,18 @@ function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
                 <div className="absolute inset-0 bg-white/5 animate-pulse rounded-lg" />
             )}
 
-            <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-105 ${isLoading ? 'opacity-0' : 'opacity-80 group-hover/logo:opacity-100'}`}>
-                <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    fill
-                    className="object-contain p-2 drop-shadow-lg"
-                    onLoad={() => setIsLoading(false)}
-                    draggable={false}
-                />
+            {/* Base Scale Wrapper */}
+            <div className="w-full h-full flex items-center justify-center" style={{ transform: `scale(${partner.scale || 1})` }}>
+                <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-105 ${isLoading ? 'opacity-0' : 'opacity-80 group-hover/logo:opacity-100'}`}>
+                    <Image
+                        src={partner.logo}
+                        alt={partner.name}
+                        fill
+                        className="object-contain p-2 drop-shadow-lg"
+                        onLoad={() => setIsLoading(false)}
+                        draggable={false}
+                    />
+                </div>
             </div>
 
             {/* Tooltip */}
@@ -143,7 +146,7 @@ function ParallaxText({ children, baseVelocity = 100 }: { children: React.ReactN
 
 export default function PartnersCarousel() {
     return (
-        <section className="w-full py-10 bg-black overflow-hidden relative z-10 border-y border-white/5">
+        <section className="w-full py-6 bg-zinc-950/50 overflow-hidden relative z-10 border-y border-white/5">
             <div className="relative flex overflow-x-hidden group [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
                 <ParallaxText baseVelocity={-0.5}>
                     {partners.map((partner, index) => (
