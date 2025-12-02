@@ -97,15 +97,32 @@ function CardVisual({ type }: { type: string }) {
 }
 
 function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scrollYProgress: any, index: number }) {
-    const start = index * 0.25;
-    const end = start + 0.35;
+    const isFirst = index === 0;
 
-    const opacity = useTransform(scrollYProgress, [start, start + 0.1, end - 0.1, end], [0, 1, 1, 0]);
-    const scale = useTransform(scrollYProgress, [start, start + 0.1, end - 0.1, end], [0.8, 1, 1, 0.8]);
-    const y = useTransform(scrollYProgress, [start, end], [50, -50]);
+    // Adjusted ranges for distinct "hold" phases
+    // Spacing out the cards more to ensure one is fully read before the next dominates
+    const start = index * 0.35;
+    const end = start + 0.5;
+
+    // Logic for first card to be always visible initially
+    // Shorter fade durations (0.1) to maximize the "hold" time (0.3)
+    const opacityRange = isFirst ? [0, end - 0.1, end] : [start, start + 0.1, end - 0.1, end];
+    const opacityOutput = isFirst ? [1, 1, 0] : [0, 1, 1, 0];
+
+    const scaleRange = isFirst ? [0, end - 0.1, end] : [start, start + 0.1, end - 0.1, end];
+    const scaleOutput = isFirst ? [1, 1, 0.8] : [0.8, 1, 1, 0.8];
 
     const xInitial = feature.position === "left" ? -50 : feature.position === "right" ? 50 : 0;
-    const x = useTransform(scrollYProgress, [start, start + 0.1, end], [xInitial, 0, 0]);
+    const xRange = isFirst ? [0, end] : [start, start + 0.1, end];
+    const xOutput = isFirst ? [0, 0] : [xInitial, 0, 0];
+
+    const yRange = isFirst ? [0, end] : [start, end];
+    const yOutput = isFirst ? [0, -50] : [50, -50];
+
+    const opacity = useTransform(scrollYProgress, opacityRange, opacityOutput);
+    const scale = useTransform(scrollYProgress, scaleRange, scaleOutput);
+    const x = useTransform(scrollYProgress, xRange, xOutput);
+    const y = useTransform(scrollYProgress, yRange, yOutput);
 
     // Mouse tilt effect
     const mouseX = useMotionValue(0);
@@ -120,7 +137,8 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
     return (
         <motion.div
             style={{ opacity, scale, x, y, perspective: 1000 }}
-            className={`absolute w-full max-w-lg ${feature.position === "center" ? "z-20 md:scale-110" : "z-10"}`}
+            // Increased max-w to 2xl (approx 15% larger than xl)
+            className={`absolute w-full max-w-2xl ${feature.position === "center" ? "z-20 md:scale-125" : "z-10"}`}
         >
             <motion.div
                 onMouseMove={handleMouseMove}
@@ -175,7 +193,8 @@ export default function InvisibleWorkforceV3() {
     const pathLength = useSpring(scrollYProgress, { stiffness: 400, damping: 90 });
 
     return (
-        <section ref={containerRef} className="relative h-[300vh] bg-black">
+        // Increased height to 400vh to slow down the scroll speed significantly
+        <section ref={containerRef} className="relative h-[400vh] bg-black">
             <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4">
 
                 {/* Dynamic Background */}
