@@ -2,6 +2,7 @@ import Hero from "@/components/home/Hero";
 import PartnersCarousel from "@/components/home/PartnersCarousel";
 import InvisibleWorkforceV3 from "@/components/home/InvisibleWorkforceV3";
 import CatalystAdvantage from "@/components/home/CatalystAdvantage";
+import { SalesTeamHeadline } from "@/components/home/SalesTeamHeadline";
 import StickyScrollFeatures from "@/components/home/StickyScrollFeatures";
 import MobileFeatures from "@/components/home/MobileFeatures";
 import Footer from "@/components/layout/Footer";
@@ -21,6 +22,7 @@ export default function Home() {
             <InvisibleWorkforceV3 />
 
             {/* Sección de Features (Desktop) */}
+            <SalesTeamHeadline />
             <StickyScrollFeatures />
 
             {/* Sección de Features (Mobile) */}
