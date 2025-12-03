@@ -1,10 +1,11 @@
 import Hero from "@/components/home/Hero";
 import PartnersCarousel from "@/components/home/PartnersCarousel";
-import InvisibleWorkforceV3 from "@/components/home/InvisibleWorkforceV3";
+import InvisibleWorkforce from "@/components/home/InvisibleWorkforce";
 import CatalystAdvantage from "@/components/home/CatalystAdvantage";
 import StickyScrollFeatures from "@/components/home/StickyScrollFeatures";
 import MobileFeatures from "@/components/home/MobileFeatures";
 import Footer from "@/components/layout/Footer";
+import InvisibleWorkforceV3 from "@/components/home/InvisibleWorkforceV3";
 
 export default function Home() {
     return (
