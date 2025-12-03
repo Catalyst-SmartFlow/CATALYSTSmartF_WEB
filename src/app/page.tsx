@@ -3,6 +3,7 @@ import PartnersCarousel from "@/components/home/PartnersCarousel";
 import InvisibleWorkforceV3 from "@/components/home/InvisibleWorkforceV3";
 import CatalystAdvantage from "@/components/home/CatalystAdvantage";
 import { SalesTeamHeadline } from "@/components/home/SalesTeamHeadline";
+import IntegrationsCarousel from "@/components/home/IntegrationsCarousel";
 import StickyScrollFeatures from "@/components/home/StickyScrollFeatures";
 import MobileFeatures from "@/components/home/MobileFeatures";
 import Footer from "@/components/layout/Footer";
@@ -19,10 +20,15 @@ export default function Home() {
             </div>
 
             {/* Sección de Fuerza Laboral Invisible (Velocity Engine V3) */}
+            <SalesTeamHeadline />
+
+            {/* Sección de Fuerza Laboral Invisible (Velocity Engine V3) */}
             <InvisibleWorkforceV3 />
 
+            {/* Sección de Integrations */}
+            <IntegrationsCarousel />
+
             {/* Sección de Features (Desktop) */}
-            <SalesTeamHeadline />
             <StickyScrollFeatures />
 
             {/* Sección de Features (Mobile) */}
