@@ -235,38 +235,11 @@ export default function StickyScrollFeatures() {
         target: containerRef,
         offset: ["start start", "end end"],
     });
-    const headerOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-    const headerScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
-    const headerBlur = useTransform(scrollYProgress, [0, 0.1], ["blur(0px)", "blur(10px)"]);
 
     return (
         <section ref={containerRef} className="bg-black relative hidden md:block pt-32">
 
-            {/* HEADLINE SECTION */}
-            <div className="max-w-5xl mx-auto text-center mb-32 px-4">
-                <motion.div style={{ opacity: headerOpacity, scale: headerScale, filter: headerBlur }}>
-                    <motion.div
-                        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-                        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                        viewport={{ once: false, amount: 0.3 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                    >
-                        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tighter mb-6">
-                            Tu equipo de ventas de IA <br />
-                            <motion.span
-                                className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400 bg-[length:200%_auto]"
-                                animate={{ backgroundPosition: "200% center" }}
-                                transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
-                            >
-                                disponible 24/7.
-                            </motion.span>
-                        </h2>
-                        <p className="text-zinc-400 text-lg md:text-xl font-medium">
-                            Escala tus operaciones sin aumentar tu nómina.
-                        </p>
-                    </motion.div>
-                </motion.div>
-            </div>
+            {/* HEADLINE SECTION REMOVED */}
 
             <div className="max-w-[1400px] mx-auto flex relative">
 
