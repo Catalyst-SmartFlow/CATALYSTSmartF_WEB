@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import SolutionsMenu from "./SolutionsMenu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 
 export default function Header() {
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() ?? 0;
@@ -29,7 +30,7 @@ export default function Header() {
         <header
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
-                isSolutionsOpen ? "bg-[#050505] border-b border-white/5" : "bg-transparent"
+                isSolutionsOpen || isMobileMenuOpen ? "bg-[#050505] border-b border-white/5" : "bg-transparent"
             )}
             onMouseLeave={() => setIsSolutionsOpen(false)}
         >
@@ -38,6 +39,7 @@ export default function Header() {
                     <span className="text-2xl font-bold tracking-tighter text-white">Catalyst.</span>
                 </div>
 
+                {/* Desktop Navigation */}
                 <motion.div
                     variants={{
                         visible: { y: 0, opacity: 1 },
@@ -45,9 +47,9 @@ export default function Header() {
                     }}
                     animate={hidden ? "hidden" : "visible"}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
-                    className="flex items-center gap-8"
+                    className="hidden md:flex items-center gap-8"
                 >
-                    <nav className="hidden md:flex items-center gap-8">
+                    <nav className="flex items-center gap-8">
                         <div
                             className="relative h-full flex items-center"
                             onMouseEnter={() => setIsSolutionsOpen(true)}
@@ -89,10 +91,69 @@ export default function Header() {
                         </Button>
                     </div>
                 </motion.div>
+
+                {/* Mobile Hamburger Menu */}
+                <div className="md:hidden flex items-center">
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="text-white p-2 focus:outline-none"
+                    >
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
             </div>
 
+            {/* Mobile Navigation Overlay */}
             <AnimatePresence>
-                {isSolutionsOpen && (
+                {isMobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.2 }}
+                        className="md:hidden fixed inset-0 top-[72px] bg-[#050505] z-40 flex flex-col p-6 border-t border-white/5"
+                    >
+                        <div className="flex flex-col h-full">
+                            <nav className="flex flex-col gap-6">
+                                <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                                    Soluciones
+                                </Link>
+                                <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                                    Precios
+                                </Link>
+                                <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                                    Recursos
+                                </Link>
+                                <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                                    Ayuda
+                                </Link>
+                                <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                                    Ingresar
+                                </Link>
+                            </nav>
+
+                            <div className="mt-auto flex flex-col gap-6">
+                                <Button className="bg-violet-600 hover:bg-violet-700 text-white rounded-full w-full h-12 text-base" onClick={() => setIsMobileMenuOpen(false)}>
+                                    Agendar demo
+                                </Button>
+
+                                <div className="border-t border-white/10 pt-6">
+                                    <button className="flex items-center justify-between w-full text-zinc-400 hover:text-white transition-colors group">
+                                        <span className="text-base font-medium">Idioma</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm text-zinc-500 group-hover:text-zinc-400">Español</span>
+                                            <ChevronRight size={16} />
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {isSolutionsOpen && !isMobileMenuOpen && (
                     <div
                         onMouseEnter={() => setIsSolutionsOpen(true)}
                         onMouseLeave={() => setIsSolutionsOpen(false)}
