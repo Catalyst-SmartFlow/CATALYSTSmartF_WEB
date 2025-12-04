@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const industries = [
+export const industries = [
     {
         icon: Stethoscope,
         title: "Salud y Consultorios",
@@ -43,7 +43,7 @@ const industries = [
     }
 ];
 
-const needs = [
+export const needs = [
     {
         icon: MessageCircle,
         title: "Ventas y Atención 24/7",
@@ -82,7 +82,7 @@ const needs = [
     }
 ];
 
-const platformLinks = [
+export const platformLinks = [
     { title: "¿Por qué Catalyst?", href: "#", icon: Sparkles },
     { title: "Canales", href: "#", icon: Share2 },
     { title: "Integraciones", href: "#", icon: Blocks },
