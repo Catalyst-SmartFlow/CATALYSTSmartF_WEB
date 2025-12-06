@@ -30,7 +30,7 @@ const NeuralNetworkVisual = () => {
     );
 
     // Generate Connections (Fully connected between adjacent layers)
-    const connections = [];
+    const connections: { id: string; start: typeof nodes[0]; end: typeof nodes[0] }[] = [];
     for (let l = 0; l < layers.length - 1; l++) {
         const currentLayerNodes = nodes.filter(n => n.layer === l);
         const nextLayerNodes = nodes.filter(n => n.layer === l + 1);
