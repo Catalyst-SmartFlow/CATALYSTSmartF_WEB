@@ -37,7 +37,9 @@ export default function Header() {
         >
             <div className="flex items-center justify-between px-6 py-4 relative z-50">
                 <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold tracking-tighter text-white">Catalyst.</span>
+                    <Link href="/" className="text-2xl font-bold tracking-tighter text-white">
+                        Catalyst.
+                    </Link>
                 </div>
 
                 {/* Desktop Navigation */}
@@ -241,7 +243,7 @@ export default function Header() {
                         onMouseEnter={() => setIsSolutionsOpen(true)}
                         onMouseLeave={() => setIsSolutionsOpen(false)}
                     >
-                        <SolutionsMenu />
+                        <SolutionsMenu closeMenu={() => setIsSolutionsOpen(false)} />
                     </div>
                 )}
             </AnimatePresence>
