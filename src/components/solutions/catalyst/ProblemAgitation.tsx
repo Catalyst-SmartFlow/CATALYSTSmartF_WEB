@@ -84,13 +84,20 @@ const CardsStack = ({ isInView }: { isInView: boolean }) => {
         <div className="relative w-full max-w-md flex flex-col items-end space-y-4">
             {/* Card 1: Top, Faded - Drifting away */}
             <motion.div
-                initial={{ opacity: 0, y: 20, x: 0 }}
+                initial={{ opacity: 0, x: 0, scale: 0.9 }}
                 animate={isInView ? {
-                    opacity: [0, 0.4, 0],
-                    y: -40,
-                    x: 10
+                    opacity: [0, 1, 1, 0],
+                    x: [0, 0, 20, 150], // Slide out right
+                    scale: [0.9, 1, 1, 0.8],
+                    filter: ["blur(2px)", "blur(0px)", "blur(0px)", "blur(4px)"]
                 } : {}}
-                transition={{ duration: 5, delay: 0, repeat: Infinity, repeatDelay: 1 }}
+                transition={{
+                    duration: 4,
+                    delay: 0,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                    times: [0, 0.1, 0.7, 1]
+                }}
                 className="w-full lg:w-[90%] mr-8"
             >
                 <Card
@@ -105,13 +112,20 @@ const CardsStack = ({ isInView }: { isInView: boolean }) => {
 
             {/* Card 2: Middle, Faded - Drifting away */}
             <motion.div
-                initial={{ opacity: 0, y: 20, x: 0 }}
+                initial={{ opacity: 0, x: 0, scale: 0.9 }}
                 animate={isInView ? {
-                    opacity: [0, 0.6, 0],
-                    y: -30,
-                    x: 5
+                    opacity: [0, 1, 1, 0],
+                    x: [0, 0, 20, 150], // Slide out right
+                    scale: [0.9, 1, 1, 0.8],
+                    filter: ["blur(2px)", "blur(0px)", "blur(0px)", "blur(4px)"]
                 } : {}}
-                transition={{ duration: 5, delay: 2, repeat: Infinity, repeatDelay: 1 }}
+                transition={{
+                    duration: 4,
+                    delay: 2,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                    times: [0, 0.1, 0.7, 1]
+                }}
                 className="w-full lg:w-[95%] mr-4"
             >
                 <Card
@@ -127,8 +141,22 @@ const CardsStack = ({ isInView }: { isInView: boolean }) => {
             {/* Card 3: Newest, Alert */}
             <motion.div
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ duration: 0.6, delay: 0.5, type: "spring" }}
+                animate={isInView ? {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    boxShadow: [
+                        "0 0 0 rgba(234, 179, 8, 0)",
+                        "0 0 30px rgba(234, 179, 8, 0.2)",
+                        "0 0 0 rgba(234, 179, 8, 0)"
+                    ]
+                } : {}}
+                transition={{
+                    opacity: { duration: 0.5 },
+                    y: { type: "spring", stiffness: 100 },
+                    scale: { duration: 0.5 },
+                    boxShadow: { duration: 2, repeat: Infinity }
+                }}
                 className="w-full z-10"
             >
                 <Card
@@ -146,11 +174,15 @@ const CardsStack = ({ isInView }: { isInView: boolean }) => {
 }
 
 const Card = ({ icon, title, message, time, color, opacity, isNew }: any) => (
-    <div className={`backdrop-blur-xl border border-white/10 p-4 rounded-xl shadow-2xl flex items-center gap-4 ${opacity} ${isNew ? 'bg-slate-800/90 border-l-4 border-l-yellow-500 shadow-yellow-900/20' : 'bg-slate-900/50 grayscale-[0.5]'}`}>
-        <div className="text-2xl">{icon}</div>
+    <div className={`backdrop-blur-xl border p-4 rounded-xl shadow-2xl flex items-center gap-4 transition-all duration-500 ${opacity} 
+        ${isNew
+            ? 'bg-slate-800/90 border-l-4 border-l-yellow-500 border-y-white/10 border-r-white/10 shadow-yellow-900/20'
+            : 'bg-slate-900/40 border-white/5 grayscale-[0.3] hover:grayscale-0'
+        }`}>
+        <div className={`text-2xl ${isNew ? 'animate-pulse' : ''}`}>{icon}</div>
         <div className="flex-1">
             <div className="flex justify-between items-center">
-                <h3 className={`text-sm font-bold ${color === 'red' ? 'text-red-400' : 'text-yellow-400'}`}>{title}</h3>
+                <h3 className={`text-sm font-bold ${color === 'red' ? 'text-red-400/80' : 'text-yellow-400'}`}>{title}</h3>
                 <span className="text-xs text-slate-500">{time}</span>
             </div>
             <p className="text-slate-300 text-sm mt-0.5">{message}</p>

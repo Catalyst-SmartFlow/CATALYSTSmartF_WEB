@@ -2,133 +2,193 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { Brain, MessageCircle, Smartphone, BarChart3 } from "lucide-react";
+import { Brain, MessageCircle, Smartphone, BarChart3, User, Bot } from "lucide-react";
 
-// Layered Neural Network Visualization
-const LayeredNeuralNetwork = () => {
-    // Define layers and nodes
+// Minimalist & Proportional Neural Network
+const NeuralNetworkVisual = () => {
+    // Proportional Grid System
+    // We use a symmetric 3-layer structure: Input(3) -> Hidden(4) -> Output(3)
+    // Coordinates are in a 200x100 space to match the card's aspect ratio better
+
     const layers = [
-        { id: 0, nodes: [1, 2, 3], x: 20 },   // Input Layer
-        { id: 1, nodes: [4, 5, 6, 7], x: 50 }, // Hidden Layer
-        { id: 2, nodes: [8, 9, 10], x: 80 },  // Output Layer
+        // Layer 1 (Input) - Left
+        { x: 40, nodes: [20, 40, 60] },
+        // Layer 2 (Hidden) - Center
+        { x: 100, nodes: [10, 30, 50, 70] },
+        // Layer 3 (Output) - Right
+        { x: 160, nodes: [20, 40, 60] }
     ];
 
-    // Generate connections (fully connected between adjacent layers)
-    const connections: { id: string; x1: number; y1: number; x2: number; y2: number }[] = [];
-
-    layers.forEach((layer, layerIndex) => {
-        if (layerIndex < layers.length - 1) {
-            const nextLayer = layers[layerIndex + 1];
-            layer.nodes.forEach((nodeId, nodeIndex) => {
-                // Distribute vertically in the top 60% of the container (y=15 to y=65)
-                const y1 = 20 + (nodeIndex * (40 / (layer.nodes.length - 1 || 1)));
-
-                nextLayer.nodes.forEach((nextNodeId, nextNodeIndex) => {
-                    const y2 = 20 + (nextNodeIndex * (40 / (nextLayer.nodes.length - 1 || 1)));
-                    connections.push({
-                        id: `${nodeId}-${nextNodeId}`,
-                        x1: layer.x,
-                        y1: y1,
-                        x2: nextLayer.x,
-                        y2: y2,
-                    });
-                });
-            });
-        }
-    });
-
-    // Calculate node positions for rendering circles
-    const nodePositions = layers.flatMap((layer) =>
-        layer.nodes.map((nodeId, index) => ({
-            id: nodeId,
+    // Generate Nodes with unique IDs
+    const nodes = layers.flatMap((layer, layerIdx) =>
+        layer.nodes.map((y, nodeIdx) => ({
+            id: `l${layerIdx}-n${nodeIdx}`,
+            layer: layerIdx,
             x: layer.x,
-            y: 20 + (index * (40 / (layer.nodes.length - 1 || 1))),
+            y: y
         }))
     );
 
-    return (
-        <div className="absolute inset-0 w-full h-full pointer-events-none">
-            {/* Gradient Mask to fade out bottom */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050505]/80 z-10" />
+    // Generate Connections (Fully connected between adjacent layers)
+    const connections: { id: string; start: typeof nodes[0]; end: typeof nodes[0] }[] = [];
+    for (let l = 0; l < layers.length - 1; l++) {
+        const currentLayerNodes = nodes.filter(n => n.layer === l);
+        const nextLayerNodes = nodes.filter(n => n.layer === l + 1);
 
-            <svg className="w-full h-full opacity-90" viewBox="0 0 100 100" preserveAspectRatio="none">
+        currentLayerNodes.forEach(startNode => {
+            nextLayerNodes.forEach(endNode => {
+                connections.push({
+                    id: `${startNode.id}-${endNode.id}`,
+                    start: startNode,
+                    end: endNode
+                });
+            });
+        });
+    }
+
+    // Background Particles
+    const particles = Array.from({ length: 20 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 200,
+        y: Math.random() * 100,
+        r: Math.random() * 1 + 0.5,
+        duration: Math.random() * 10 + 10,
+    }));
+
+    return (
+        <div className="absolute inset-0 w-full h-full pointer-events-none flex items-center justify-center overflow-hidden">
+
+            <svg className="w-full h-full" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
                 <defs>
-                    <linearGradient id="neural-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgba(168, 85, 247, 0.1)" />
-                        <stop offset="50%" stopColor="rgba(168, 85, 247, 0.4)" />
-                        <stop offset="100%" stopColor="rgba(168, 85, 247, 0.1)" />
+                    {/* Clean Gradient for lines */}
+                    <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="rgba(168, 85, 247, 0.05)" />
+                        <stop offset="50%" stopColor="rgba(168, 85, 247, 0.5)" />
+                        <stop offset="100%" stopColor="rgba(168, 85, 247, 0.05)" />
                     </linearGradient>
-                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-                        <feMerge>
-                            <feMergeNode in="coloredBlur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
                 </defs>
 
-                {/* Connections */}
-                {connections.map((conn, i) => (
-                    <motion.line
-                        key={conn.id}
-                        x1={`${conn.x1}%`}
-                        y1={`${conn.y1}%`}
-                        x2={`${conn.x2}%`}
-                        y2={`${conn.y2}%`}
-                        stroke="url(#neural-gradient)"
-                        strokeWidth="0.3"
-                        initial={{ opacity: 0.1 }}
-                        animate={{ opacity: [0.1, 0.3, 0.1] }}
-                        transition={{
-                            duration: 2 + Math.random(),
-                            repeat: Infinity,
-                            delay: Math.random() * 2,
-                        }}
-                    />
-                ))}
-
-                {/* Signals traveling forward */}
-                {connections.map((conn, i) => (
+                {/* Background Particles (Noise) */}
+                {particles.map((p) => (
                     <motion.circle
-                        key={`signal-${conn.id}`}
-                        r="0.5"
-                        fill="#fff"
-                        filter="url(#glow)"
-                        initial={{ offsetDistance: "0%" }}
+                        key={`p-${p.id}`}
+                        cx={p.x}
+                        cy={p.y}
+                        r={p.r}
+                        fill="#A855F7"
+                        initial={{ opacity: 0 }}
                         animate={{
-                            cx: [`${conn.x1}%`, `${conn.x2}%`],
-                            cy: [`${conn.y1}%`, `${conn.y2}%`],
-                            opacity: [0, 1, 0]
+                            opacity: [0, 0.3, 0],
+                            y: [p.y, p.y - 10], // Float up slightly
+                            x: [p.x, p.x + (Math.random() * 10 - 5)]
                         }}
                         transition={{
-                            duration: 1.5,
+                            duration: p.duration,
                             repeat: Infinity,
-                            delay: Math.random() * 2,
                             ease: "linear",
-                            repeatDelay: 0.5
+                            delay: Math.random() * 5
                         }}
                     />
                 ))}
 
-                {/* Nodes */}
-                {nodePositions.map((node) => (
-                    <motion.circle
-                        key={node.id}
-                        cx={`${node.x}%`}
-                        cy={`${node.y}%`}
-                        r="1.8"
-                        fill="#050505"
-                        stroke="#A855F7"
-                        strokeWidth="0.8"
-                        filter="url(#glow)"
-                        animate={{ scale: [1, 1.1, 1], strokeOpacity: [0.5, 1, 0.5] }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: Math.random(),
-                        }}
-                    />
-                ))}
+                {/* Network Group with Entrance Animation */}
+                <motion.g
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                >
+                    {/* Connections - Minimalist Lines */}
+                    {connections.map((conn, i) => (
+                        <React.Fragment key={conn.id}>
+                            {/* Static faint line for structure */}
+                            <line
+                                x1={conn.start.x}
+                                y1={conn.start.y}
+                                x2={conn.end.x}
+                                y2={conn.end.y}
+                                stroke="rgba(255,255,255,0.03)"
+                                strokeWidth="0.5"
+                            />
+
+                            {/* Active Pulse Line */}
+                            <motion.line
+                                x1={conn.start.x}
+                                y1={conn.start.y}
+                                x2={conn.end.x}
+                                y2={conn.end.y}
+                                stroke="url(#line-gradient)"
+                                strokeWidth="0.5"
+                                initial={{ strokeOpacity: 0 }}
+                                animate={{
+                                    strokeOpacity: [0, 0.8, 0],
+                                }}
+                                transition={{
+                                    duration: 3, // Slower, more elegant
+                                    repeat: Infinity,
+                                    delay: (conn.start.layer * 0.8) + (Math.random() * 0.5), // More organic delay
+                                    ease: "easeInOut"
+                                }}
+                            />
+
+                            {/* Traveling Data Packet (Dot) */}
+                            <motion.circle
+                                r="0.8"
+                                fill="#A855F7"
+                                opacity="0.9"
+                            >
+                                <animateMotion
+                                    dur="3s" // Slower travel
+                                    begin={`${(conn.start.layer * 0.8)}s`}
+                                    repeatCount="indefinite"
+                                    path={`M ${conn.start.x} ${conn.start.y} L ${conn.end.x} ${conn.end.y}`}
+                                    keyPoints="0;1"
+                                    keyTimes="0;1"
+                                    calcMode="linear"
+                                />
+                                <animate
+                                    attributeName="opacity"
+                                    values="0;1;0"
+                                    dur="3s"
+                                    begin={`${(conn.start.layer * 0.8)}s`}
+                                    repeatCount="indefinite"
+                                />
+                            </motion.circle>
+                        </React.Fragment>
+                    ))}
+
+                    {/* Nodes - Clean Circles */}
+                    {nodes.map((node) => (
+                        <motion.g key={node.id}>
+                            {/* Outer Ring */}
+                            <circle
+                                cx={node.x}
+                                cy={node.y}
+                                r="3"
+                                fill="#050505"
+                                stroke="rgba(168, 85, 247, 0.3)"
+                                strokeWidth="0.5"
+                            />
+                            {/* Inner Core */}
+                            <motion.circle
+                                cx={node.x}
+                                cy={node.y}
+                                r="1.5"
+                                fill="#A855F7"
+                                animate={{
+                                    opacity: [0.3, 1, 0.3],
+                                    scale: [1, 1.2, 1]
+                                }}
+                                transition={{
+                                    duration: 3,
+                                    repeat: Infinity,
+                                    delay: node.layer * 0.8, // Sync with connections
+                                    ease: "easeInOut"
+                                }}
+                            />
+                        </motion.g>
+                    ))}
+                </motion.g>
             </svg>
         </div>
     );
@@ -144,7 +204,7 @@ export default function FeaturesBento() {
 
             <div className="max-w-6xl mx-auto relative z-10">
                 <div className="mb-12 text-center">
-                    <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 mb-4 pb-2">
                         Inteligencia que evoluciona
                     </h2>
                     <p className="text-white/40 text-lg max-w-2xl mx-auto">
@@ -164,7 +224,7 @@ export default function FeaturesBento() {
                     >
 
                         {/* Abstract Visual: Full Card Layered Neural Network */}
-                        <LayeredNeuralNetwork />
+                        <NeuralNetworkVisual />
 
                         <div className="absolute bottom-0 left-0 p-8 w-full pointer-events-none">
                             <div className="flex items-center gap-3 mb-2">
@@ -196,32 +256,57 @@ export default function FeaturesBento() {
                             </div>
                             <p className="text-white/60 mb-8">Mira cuánto dinero te ha generado el bot.</p>
 
-                            {/* Visual: Growth Chart */}
-                            <div className="flex-1 flex items-end justify-between gap-2 px-2 pb-4">
-                                {[40, 65, 45, 80, 60, 95].map((height, i) => (
+                            {/* Visual: Premium Growth Chart */}
+                            <div className="flex-1 flex items-end justify-between gap-3 px-2 pb-4 relative z-10">
+                                {/* Grid Lines (Background) */}
+                                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                                    <div className="w-full h-[1px] bg-white border-t border-dashed border-white/50" />
+                                    <div className="w-full h-[1px] bg-white border-t border-dashed border-white/50" />
+                                    <div className="w-full h-[1px] bg-white border-t border-dashed border-white/50" />
+                                    <div className="w-full h-[1px] bg-white border-t border-dashed border-white/50" />
+                                </div>
+
+                                {[35, 60, 45, 75, 55, 90].map((height, i) => (
                                     <motion.div
                                         key={i}
-                                        initial={{ height: "5%" }}
+                                        initial={{ height: "0%" }}
                                         whileInView={{ height: `${height}%` }}
                                         viewport={{ once: true }}
                                         transition={{
-                                            duration: 1.2,
+                                            duration: 1.5,
                                             delay: 0.2 + (i * 0.1),
-                                            type: "spring",
-                                            stiffness: 50,
-                                            damping: 15
+                                            ease: "easeOut"
                                         }}
-                                        className="w-full bg-white/10 rounded-t-sm relative group-hover:bg-emerald-500/30 transition-colors duration-500"
+                                        className="w-full rounded-t-lg relative group-hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-shadow duration-500"
                                     >
+                                        {/* Bar Gradient */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-emerald-500/60 rounded-t-lg" />
+
+                                        {/* Top Line Highlight */}
+                                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+
+                                        {/* Live Fluctuation Animation */}
+                                        <motion.div
+                                            animate={{ height: [`${height}%`, `${height + (Math.random() * 10 - 5)}%`, `${height}%`] }}
+                                            transition={{
+                                                duration: 2 + Math.random(),
+                                                repeat: Infinity,
+                                                ease: "easeInOut",
+                                                delay: 1.5 + (i * 0.2)
+                                            }}
+                                            className="absolute inset-0 bg-emerald-500/0"
+                                        />
+
                                         {i === 5 && (
                                             <motion.div
                                                 initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                                whileInView={{ opacity: 1, y: -35, scale: 1 }}
                                                 viewport={{ once: true }}
-                                                transition={{ delay: 1.2, type: "spring" }}
-                                                className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-500 text-black text-xs font-bold px-2 py-1 rounded shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                                                transition={{ delay: 1.5, type: "spring" }}
+                                                className="absolute left-1/2 -translate-x-1/2 bg-emerald-500 text-[#050505] text-xs font-bold px-2.5 py-1 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] whitespace-nowrap z-20"
                                             >
                                                 +128%
+                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-emerald-500 rotate-45" />
                                             </motion.div>
                                         )}
                                     </motion.div>
@@ -241,27 +326,67 @@ export default function FeaturesBento() {
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="h-full p-8 flex flex-col justify-between relative z-10">
-                            {/* Visual: Flow */}
-                            <div className="flex items-center justify-between px-2 py-6">
-                                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/5 shadow-inner">
-                                    <Smartphone className="w-6 h-6 text-white/80" />
+                            {/* Visual: Premium Omni-Channel Flow */}
+                            <div className="flex items-center justify-between px-2 py-6 relative">
+                                {/* Connecting Path (Background) */}
+                                <div className="absolute left-14 right-14 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-blue-500/20 to-[#25D366]/20" />
+
+                                {/* Web/Device Node */}
+                                <div className="relative group/web z-10">
+                                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+                                        <Smartphone className="w-7 h-7 text-blue-400" />
+                                    </div>
+                                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-blue-400/50 tracking-wider uppercase">Web</div>
                                 </div>
 
-                                {/* Connecting Line with Particle */}
-                                <div className="flex-1 h-[2px] bg-white/10 mx-4 relative overflow-hidden rounded-full">
+                                {/* Traveling Message Bubble */}
+                                <div className="absolute left-14 right-14 top-1/2 -translate-y-1/2 h-8 pointer-events-none z-20">
                                     <motion.div
-                                        animate={{ x: ["-100%", "100%"] }}
-                                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear", repeatDelay: 0.5 }}
-                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400 to-transparent w-1/2 blur-[1px]"
-                                    />
+                                        initial={{ left: "0%", opacity: 0, scale: 0.5 }}
+                                        animate={{
+                                            left: ["0%", "90%"],
+                                            opacity: [0, 1, 1, 0],
+                                            scale: [0.5, 1, 1, 0.5]
+                                        }}
+                                        transition={{
+                                            duration: 2.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut",
+                                            repeatDelay: 0.5
+                                        }}
+                                        className="absolute top-1/2 -translate-y-1/2"
+                                    >
+                                        <div className="px-3 py-1.5 rounded-full bg-white text-black text-[10px] font-bold shadow-[0_0_10px_rgba(255,255,255,0.3)] flex items-center gap-1.5 whitespace-nowrap">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                            Hola!
+                                        </div>
+                                    </motion.div>
                                 </div>
 
-                                <div className="w-12 h-12 rounded-2xl bg-[#25D366]/10 flex items-center justify-center border border-[#25D366]/20 shadow-[0_0_15px_rgba(37,211,102,0.1)]">
-                                    <MessageCircle className="w-6 h-6 text-[#25D366]" />
+                                {/* WhatsApp Node */}
+                                <div className="relative group/wa z-10">
+                                    <motion.div
+                                        animate={{ scale: [1, 1.1, 1] }}
+                                        transition={{ duration: 2.5, repeat: Infinity, times: [0.8, 0.9, 1], repeatDelay: 0.5 }}
+                                        className="w-14 h-14 rounded-2xl bg-[#25D366]/10 flex items-center justify-center border border-[#25D366]/20 shadow-[0_0_15px_rgba(37,211,102,0.1)]"
+                                    >
+                                        <MessageCircle className="w-7 h-7 text-[#25D366]" />
+                                    </motion.div>
+
+                                    {/* Notification Badge */}
+                                    <motion.div
+                                        animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 1, 0] }}
+                                        transition={{ duration: 2.5, repeat: Infinity, times: [0.8, 0.85, 0.95, 1], repeatDelay: 0.5 }}
+                                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full border-2 border-[#050505] flex items-center justify-center z-20 shadow-[0_0_15px_rgba(239,68,68,0.6)]"
+                                    >
+                                        <span className="text-[10px] font-bold text-white">1</span>
+                                    </motion.div>
+
+                                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-[#25D366]/50 tracking-wider uppercase">WhatsApp</div>
                                 </div>
                             </div>
 
-                            <div>
+                            <div className="mt-4">
                                 <h3 className="text-xl font-semibold text-white mb-1">Omnicanalidad</h3>
                                 <p className="text-white/60 text-sm">Te hablan por web, siguen por WhatsApp.</p>
                             </div>
@@ -279,22 +404,76 @@ export default function FeaturesBento() {
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="h-full p-8 flex flex-col justify-between relative z-10">
-                            {/* Visual: Toggle */}
-                            <div className="flex justify-center py-4">
-                                <div className="relative w-36 h-14 bg-black/40 rounded-full p-1.5 border border-white/10 flex items-center shadow-inner">
-                                    <motion.div
-                                        animate={{ x: [0, 88, 0] }}
-                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
-                                        className="w-11 h-11 bg-gradient-to-b from-white to-gray-300 rounded-full shadow-lg flex items-center justify-center z-10 relative"
-                                    >
-                                        <div className="w-2 h-2 rounded-full bg-black/20" />
-                                    </motion.div>
+                            {/* Visual: Advanced Toggle */}
+                            <div className="flex flex-col items-center justify-center py-2 flex-1">
+                                <div className="relative w-48 h-16 bg-black/40 rounded-full p-1.5 border border-white/10 flex items-center justify-start shadow-inner overflow-hidden">
 
-                                    <div className="absolute inset-0 flex justify-between px-5 items-center text-[10px] font-bold tracking-widest text-white/20 uppercase pointer-events-none">
-                                        <span>AI</span>
-                                        <span>Human</span>
+                                    {/* Background Labels */}
+                                    <div className="absolute inset-0 flex justify-between px-6 items-center text-xs font-bold tracking-wider text-white/20 uppercase pointer-events-none z-0">
+                                        <span className="flex items-center gap-2">
+                                            <Bot className="w-3 h-3" /> AI
+                                        </span>
+                                        <span className="flex items-center gap-2">
+                                            HUMAN <User className="w-3 h-3" />
+                                        </span>
                                     </div>
+
+                                    {/* Sliding Knob */}
+                                    <motion.div
+                                        animate={{
+                                            x: [0, 85, 85, 0, 0],
+                                            backgroundColor: ["#A855F7", "#F97316", "#F97316", "#A855F7", "#A855F7"]
+                                        }}
+                                        transition={{
+                                            duration: 6,
+                                            repeat: Infinity,
+                                            ease: "easeInOut",
+                                            times: [0, 0.1, 0.5, 0.6, 1],
+                                            repeatDelay: 1
+                                        }}
+                                        className="w-20 h-full rounded-full shadow-lg flex items-center justify-center z-10 relative"
+                                    >
+                                        <motion.div
+                                            animate={{ opacity: [1, 0, 0, 1, 1] }}
+                                            transition={{ duration: 6, repeat: Infinity, times: [0, 0.1, 0.5, 0.6, 1], repeatDelay: 1 }}
+                                            className="absolute inset-0 flex items-center justify-center text-white font-bold text-xs gap-1"
+                                        >
+                                            <Bot className="w-4 h-4" /> AUTO
+                                        </motion.div>
+
+                                        <motion.div
+                                            animate={{ opacity: [0, 1, 1, 0, 0] }}
+                                            transition={{ duration: 6, repeat: Infinity, times: [0, 0.1, 0.5, 0.6, 1], repeatDelay: 1 }}
+                                            className="absolute inset-0 flex items-center justify-center text-white font-bold text-xs gap-1"
+                                        >
+                                            MANUAL <User className="w-4 h-4" />
+                                        </motion.div>
+                                    </motion.div>
                                 </div>
+
+                                {/* Status Indicator */}
+                                <motion.div
+                                    className="mt-4 text-xs font-mono px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/50 relative flex items-center justify-center"
+                                    animate={{
+                                        color: ["#A855F7", "#F97316", "#F97316", "#A855F7", "#A855F7"],
+                                        borderColor: ["rgba(168,85,247,0.2)", "rgba(249,115,22,0.2)", "rgba(249,115,22,0.2)", "rgba(168,85,247,0.2)", "rgba(168,85,247,0.2)"]
+                                    }}
+                                    transition={{ duration: 6, repeat: Infinity, times: [0, 0.1, 0.5, 0.6, 1], repeatDelay: 1 }}
+                                >
+                                    <motion.span
+                                        animate={{ opacity: [1, 0, 0, 1, 1] }}
+                                        transition={{ duration: 6, repeat: Infinity, times: [0, 0.1, 0.5, 0.6, 1], repeatDelay: 1 }}
+                                    >
+                                        ● AI PILOT ACTIVE
+                                    </motion.span>
+                                    <motion.span
+                                        className="absolute inset-0 flex items-center justify-center w-full h-full"
+                                        animate={{ opacity: [0, 1, 1, 0, 0] }}
+                                        transition={{ duration: 6, repeat: Infinity, times: [0, 0.1, 0.5, 0.6, 1], repeatDelay: 1 }}
+                                    >
+                                        ● HUMAN CONTROL
+                                    </motion.span>
+                                </motion.div>
                             </div>
 
                             <div>
