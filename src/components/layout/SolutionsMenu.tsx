@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const industries = [
+export const industries = [
     {
         icon: Stethoscope,
         title: "Salud y Consultorios",
@@ -43,12 +43,12 @@ const industries = [
     }
 ];
 
-const needs = [
+export const needs = [
     {
         icon: MessageCircle,
         title: "Ventas y Atención 24/7",
         description: "Convierte visitantes en clientes al instante. Atiende miles de chats simultáneamente.",
-        href: "#",
+        href: "/soluciones/catalyst",
         iconColor: "text-cyan-950",
         bgColor: "bg-cyan-400",
         arrowColor: "text-cyan-400",
@@ -82,20 +82,29 @@ const needs = [
     }
 ];
 
-const platformLinks = [
+export const platformLinks = [
     { title: "¿Por qué Catalyst?", href: "#", icon: Sparkles },
     { title: "Canales", href: "#", icon: Share2 },
     { title: "Integraciones", href: "#", icon: Blocks },
 ];
 
-export default function SolutionsMenu() {
+import { useRouter } from "next/navigation";
+
+export default function SolutionsMenu({ closeMenu }: { closeMenu?: () => void }) {
+    const router = useRouter();
+
+    const handleNavigation = (href: string) => {
+        if (closeMenu) closeMenu();
+        router.push(href);
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 w-full bg-[#050505] border-t border-white/10 shadow-2xl z-40 overflow-hidden"
+            className="absolute top-full left-0 w-full bg-[#050505] border-t border-white/10 shadow-2xl z-[60] overflow-hidden"
         >
             <div className="flex min-h-[500px]">
 
@@ -107,14 +116,14 @@ export default function SolutionsMenu() {
                         </h3>
                         <div className="space-y-2">
                             {platformLinks.map((link, index) => (
-                                <Link
+                                <div
                                     key={index}
-                                    href={link.href}
-                                    className="flex items-center gap-3 p-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all group border-l-2 border-transparent hover:border-violet-500"
+                                    onClick={() => handleNavigation(link.href)}
+                                    className="flex items-center gap-3 p-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all group border-l-2 border-transparent hover:border-violet-500 cursor-pointer"
                                 >
                                     <link.icon size={18} className="text-zinc-500 group-hover:text-violet-400 transition-colors" />
                                     <span className="font-medium">{link.title}</span>
-                                </Link>
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -144,11 +153,11 @@ export default function SolutionsMenu() {
                             </h3>
                             <div className="grid gap-3">
                                 {industries.map((item, index) => (
-                                    <Link
+                                    <div
                                         key={index}
-                                        href={item.href}
+                                        onClick={() => handleNavigation(item.href)}
                                         className={cn(
-                                            "group relative flex items-start gap-4 p-4 rounded-xl transition-all duration-300",
+                                            "group relative flex items-start gap-4 p-4 rounded-xl transition-all duration-300 cursor-pointer",
                                             "border border-transparent",
                                             item.hoverBg,
                                             item.hoverBorder
@@ -176,7 +185,7 @@ export default function SolutionsMenu() {
                                                 {item.description}
                                             </p>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))}
                             </div>
                         </div>
@@ -188,11 +197,11 @@ export default function SolutionsMenu() {
                             </h3>
                             <div className="grid gap-3">
                                 {needs.map((item, index) => (
-                                    <Link
+                                    <div
                                         key={index}
-                                        href={item.href}
+                                        onClick={() => handleNavigation(item.href)}
                                         className={cn(
-                                            "group relative flex items-start gap-4 p-4 rounded-xl transition-all duration-300",
+                                            "group relative flex items-start gap-4 p-4 rounded-xl transition-all duration-300 cursor-pointer",
                                             "border border-transparent",
                                             item.hoverBg,
                                             item.hoverBorder
@@ -220,7 +229,7 @@ export default function SolutionsMenu() {
                                                 {item.description}
                                             </p>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))}
                             </div>
                         </div>
