@@ -60,13 +60,15 @@ const CatalystCXHero = () => {
                                 Ver Demo en Vivo
                                 <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                className="border-slate-700 text-slate-300 bg-transparent hover:text-white hover:bg-slate-800"
-                            >
-                                Ver Planes
-                            </Button>
+                            <a href="#pricing">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="border-slate-700 text-slate-300 bg-transparent hover:text-white hover:bg-slate-800"
+                                >
+                                    Ver Planes
+                                </Button>
+                            </a>
                         </div>
 
                         {/* Social Proof */}

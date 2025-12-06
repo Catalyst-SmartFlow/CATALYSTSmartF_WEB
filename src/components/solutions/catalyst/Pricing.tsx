@@ -59,7 +59,7 @@ const plans = [
 
 const Pricing = () => {
     return (
-        <section className="py-24 bg-slate-950 relative overflow-hidden">
+        <section id="pricing" className="py-24 bg-slate-950 relative overflow-hidden">
             {/* Gradient fade from previous section */}
             <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#050505] via-[#050505]/50 to-transparent z-0" />
 
@@ -229,6 +229,9 @@ const Pricing = () => {
                     </div>
                 </motion.div>
             </div>
+
+            {/* Gradient fade to next section */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent z-0" />
         </section>
     );
 };
