@@ -33,7 +33,7 @@ export const industries = [
         icon: Utensils,
         title: "Gastronomía y Hospitality",
         description: "Automatiza reservas, pedidos y dispara tus reseñas de 5 estrellas en Google.",
-        href: "#",
+        href: "/soluciones/catalyst-host",
         iconColor: "text-orange-950",
         bgColor: "bg-orange-400",
         arrowColor: "text-orange-400",
