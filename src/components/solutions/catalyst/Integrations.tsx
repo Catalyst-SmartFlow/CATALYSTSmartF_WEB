@@ -1,9 +1,12 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { BrainCircuit } from "lucide-react";
+import dynamic from "next/dynamic";
+import { m as motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+
+const IntegrationsBackground = dynamic(() => import("./IntegrationsBackground"), { ssr: false });
+const CoreOrb = dynamic(() => import("./CoreOrb"), { ssr: false });
 
 const inputs = [
     { name: "WhatsApp", logo: "/integratorsLogos/whatsapp-seeklogo.svg" },
@@ -20,6 +23,29 @@ const outputs = [
 ];
 
 const Integrations = () => {
+    const [isMobile, setIsMobile] = React.useState(false);
+    const [currentInputIndex, setCurrentInputIndex] = React.useState(0);
+    const [currentOutputIndex, setCurrentOutputIndex] = React.useState(0);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    // Cycle logos on mobile
+    React.useEffect(() => {
+        if (!isMobile) return;
+
+        const interval = setInterval(() => {
+            setCurrentInputIndex((prev) => (prev + 1) % inputs.length);
+            setCurrentOutputIndex((prev) => (prev + 1) % outputs.length);
+        }, 3000); // 3 seconds per logo
+
+        return () => clearInterval(interval);
+    }, [isMobile]);
+
     return (
         <section className="w-full min-h-screen bg-[#050505] py-24 relative overflow-hidden flex flex-col items-center justify-center">
             {/* Background Gradients */}
@@ -30,12 +56,12 @@ const Integrations = () => {
 
             <div className="container mx-auto px-4 relative z-10">
                 {/* Header */}
-                <div className="text-center mb-20">
+                <div className="text-center mb-12 lg:mb-20">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight"
+                        className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight"
                     >
                         Vende donde están <span className="text-indigo-400">tus clientes</span>.
                     </motion.h2>
@@ -51,90 +77,143 @@ const Integrations = () => {
                 </div>
 
                 {/* Main Interaction Stage */}
-                <div className="relative w-full max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-0 items-center">
+                {isMobile ? (
+                    // MOBILE LAYOUT: Horizontal Flow (Input -> Core -> Output)
+                    <div className="flex items-start justify-between gap-2 max-w-md mx-auto relative py-10">
 
-                    {/* Desktop SVG Connections Layer */}
-                    <div className="hidden lg:block absolute inset-0 pointer-events-none">
-                        <svg className="w-full h-full" viewBox="0 0 1400 550" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stopColor="rgba(99, 102, 241, 0.1)" />
-                                    <stop offset="50%" stopColor="rgba(99, 102, 241, 0.5)" />
-                                    <stop offset="100%" stopColor="rgba(99, 102, 241, 0.1)" />
-                                </linearGradient>
-                            </defs>
+                        {/* Connecting Line Background - Aligned with Card Centers (top-20 = py-10 + half card height) */}
+                        <div className="absolute top-20 left-10 right-10 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent -translate-y-1/2 z-0" />
 
-                            {/* Left to Center Connections */}
-                            {[0, 1, 2, 3].map((i) => {
-                                const yStart = 60 + i * 144; // Aligned with box centers (approx 550 height)
-                                const yEnd = 275; // Center of container
-                                return (
-                                    <ConnectionLine
-                                        key={`left-${i}`}
-                                        d={`M 420 ${yStart} C 550 ${yStart}, 550 ${yEnd}, 620 ${yEnd}`}
-                                        delay={i * 0.2}
-                                    />
-                                );
-                            })}
-
-                            {/* Center to Right Connections */}
-                            {[0, 1, 2, 3].map((i) => {
-                                const yStart = 275; // Center of container
-                                const yEnd = 60 + i * 144; // Aligned with box centers
-                                return (
-                                    <ConnectionLine
-                                        key={`right-${i}`}
-                                        d={`M 780 ${yStart} C 850 ${yStart}, 850 ${yEnd}, 980 ${yEnd}`}
-                                        delay={0.5 + i * 0.2}
-                                    />
-                                );
-                            })}
-                        </svg>
-                    </div>
-
-                    {/* Left Column: Inputs */}
-                    <div className="flex flex-col gap-8 items-center lg:items-end lg:pr-12 relative z-20">
-                        {inputs.map((item, i) => (
-                            <IntegrationCard key={item.name} item={item} index={i} side="left" />
-                        ))}
-                    </div>
-
-                    {/* Center Column: The Core */}
-                    <div className="flex flex-col items-center justify-center relative z-20 my-12 lg:my-0">
-                        <div className="relative">
-                            {/* Pulsing Rings */}
-                            <motion.div
-                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute inset-0 bg-indigo-500/30 rounded-full blur-xl"
-                            />
-                            <motion.div
-                                animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                                className="absolute inset-0 bg-blue-500/20 rounded-full blur-2xl"
-                            />
-
-                            {/* Core Orb */}
-                            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center relative shadow-[0_0_50px_rgba(99,102,241,0.3)] z-10 backdrop-blur-sm">
-                                <div className="absolute inset-0 rounded-full bg-gradient-to-b from-indigo-500/10 to-transparent" />
-                                <BrainCircuit className="w-16 h-16 text-indigo-400" />
+                        {/* Animated Data Packet (The "Data Flow") - Aligned & Full Path */}
+                        <motion.div
+                            className="absolute top-20 -translate-y-1/2 z-10 pointer-events-none flex items-center"
+                            animate={{
+                                left: ["10%", "50%", "50%", "90%"], // Exact centers: 10% (Input) -> 50% (Core) -> 90% (Output)
+                                opacity: [0, 1, 0, 1, 0],
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                                times: [0, 0.4, 0.5, 0.9, 1],
+                                ease: "easeInOut"
+                            }}
+                        >
+                            {/* Comet Head */}
+                            <div className="relative w-4 h-4 bg-white rounded-full shadow-[0_0_25px_rgba(255,255,255,0.8),0_0_10px_rgba(99,102,241,1)] z-20">
+                                <div className="absolute inset-0 bg-indigo-400 rounded-full animate-ping opacity-75" />
                             </div>
 
-                            {/* Label */}
-                            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-center">
-                                <span className="text-indigo-400 font-semibold tracking-wider text-sm uppercase">Catalyst Core</span>
+                            {/* Comet Tail */}
+                            <div className="absolute right-2 w-12 h-1 bg-gradient-to-l from-indigo-500 to-transparent opacity-80 blur-[1px]" />
+                        </motion.div>
+
+                        {/* Left: Input (Stack Representation) */}
+                        <motion.div
+                            initial={{ x: -20, opacity: 0 }}
+                            whileInView={{ x: 0, opacity: 1 }}
+                            viewport={{ once: true }}
+                            className="relative z-10 flex flex-col items-center gap-2 w-20"
+                        >
+                            <div className="w-20 h-20 bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                {/* Carousel of Inputs */}
+                                <div className="relative w-10 h-10 flex items-center justify-center">
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={inputs[currentInputIndex].name}
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            transition={{ duration: 0.5 }}
+                                            className="absolute inset-0"
+                                        >
+                                            <Image
+                                                src={inputs[currentInputIndex].logo}
+                                                alt={inputs[currentInputIndex].name}
+                                                fill
+                                                className="object-contain"
+                                            />
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+                            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Inputs</span>
+                        </motion.div>
+
+                        {/* Center: Core - Wrapped to match height */}
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            viewport={{ once: true }}
+                            className="relative z-20 w-20 h-20 flex items-center justify-center"
+                        >
+                            <div className="scale-75">
+                                <CoreOrb />
+                            </div>
+                        </motion.div>
+
+                        {/* Right: Output (Stack Representation) */}
+                        <motion.div
+                            initial={{ x: 20, opacity: 0 }}
+                            whileInView={{ x: 0, opacity: 1 }}
+                            viewport={{ once: true }}
+                            className="relative z-10 flex flex-col items-center gap-2 w-20"
+                        >
+                            <div className="w-20 h-20 bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                {/* Carousel of Outputs */}
+                                <div className="relative w-10 h-10 flex items-center justify-center">
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={outputs[currentOutputIndex].name}
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            transition={{ duration: 0.5 }}
+                                            className="absolute inset-0"
+                                        >
+                                            <Image
+                                                src={outputs[currentOutputIndex].logo}
+                                                alt={outputs[currentOutputIndex].name}
+                                                fill
+                                                className="object-contain"
+                                            />
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+                            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Outputs</span>
+                        </motion.div>
+
+                    </div>
+                ) : (
+                    // DESKTOP LAYOUT
+                    <div className="relative w-full max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-0 items-center">
+                        {/* Desktop SVG Connections Layer */}
+                        <IntegrationsBackground />
+
+                        {/* Left Column: Inputs */}
+                        <div className="flex flex-col gap-8 items-center lg:items-end lg:pr-12 relative z-20">
+                            {inputs.map((item, i) => (
+                                <IntegrationCard key={item.name} item={item} index={i} side="left" />
+                            ))}
+                        </div>
+
+                        {/* Center Column: The Core */}
+                        <div className="flex flex-col items-center justify-center relative z-20 my-12 lg:my-0">
+                            <div className="relative">
+                                <CoreOrb />
                             </div>
                         </div>
-                    </div>
 
-                    {/* Right Column: Outputs */}
-                    <div className="flex flex-col gap-8 items-center lg:items-start lg:pl-12 relative z-20">
-                        {outputs.map((item, i) => (
-                            <IntegrationCard key={item.name} item={item} index={i} side="right" />
-                        ))}
+                        {/* Right Column: Outputs */}
+                        <div className="flex flex-col gap-8 items-center lg:items-start lg:pl-12 relative z-20">
+                            {outputs.map((item, i) => (
+                                <IntegrationCard key={item.name} item={item} index={i} side="right" />
+                            ))}
+                        </div>
                     </div>
-
-                </div>
+                )}
 
                 {/* Footer Text */}
                 <motion.div
@@ -153,35 +232,7 @@ const Integrations = () => {
     );
 };
 
-const ConnectionLine = ({ d, delay }: { d: string; delay: number }) => {
-    return (
-        <>
-            {/* Base Line */}
-            <path d={d} stroke="rgba(255,255,255,0.05)" strokeWidth="2" fill="none" />
 
-            {/* Animated Flow Line */}
-            <motion.path
-                d={d}
-                stroke="url(#lineGradient)"
-                strokeWidth="2"
-                fill="none"
-                initial={{ pathLength: 0, opacity: 0 }}
-                whileInView={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1.5, delay, ease: "easeInOut" }}
-            />
-
-            {/* Moving Particle */}
-            <motion.circle r="3" fill="#818cf8">
-                <animateMotion
-                    dur="3s"
-                    repeatCount="indefinite"
-                    path={d}
-                    rotate="auto"
-                />
-            </motion.circle>
-        </>
-    );
-};
 
 const IntegrationCard = ({ item, index, side }: { item: { name: string; logo: string }; index: number; side: "left" | "right" }) => {
     return (
