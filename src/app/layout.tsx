@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     description: "Catalyst is an agency dedicated to efficiency for SMEs, developing custom automation and AI systems.",
 };
 
+import { Providers } from "@/components/layout/Providers";
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -20,10 +22,12 @@ export default function RootLayout({
     return (
         <html lang="es" suppressHydrationWarning>
             <body className={cn("min-h-screen bg-background font-sans antialiased", inter.variable)}>
-                <SmoothScroll>
-                    <Header />
-                    {children}
-                </SmoothScroll>
+                <Providers>
+                    <SmoothScroll>
+                        <Header />
+                        {children}
+                    </SmoothScroll>
+                </Providers>
             </body>
         </html>
     );
