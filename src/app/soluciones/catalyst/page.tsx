@@ -3,6 +3,7 @@ import CatalystCXHero from "@/components/solutions/catalyst/Hero";
 import ProblemAgitation from "@/components/solutions/catalyst/ProblemAgitation";
 import Pricing from "@/components/solutions/catalyst/Pricing";
 import FeaturesBento from "@/components/solutions/catalyst/FeaturesBento";
+import Integrations from "@/components/solutions/catalyst/Integrations";
 
 export default function CatalystCXPage() {
     return (
@@ -11,6 +12,7 @@ export default function CatalystCXPage() {
             <ProblemAgitation />
             <Pricing />
             <FeaturesBento />
+            <Integrations />
         </main>
     );
 }
