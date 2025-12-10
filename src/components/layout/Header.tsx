@@ -39,8 +39,12 @@ export default function Header() {
         >
             <div className="flex items-center justify-between px-6 py-4 relative z-50">
                 <div className="flex items-center gap-2">
-                    <Link href="/" className="text-2xl font-bold tracking-tighter text-white">
-                        Catalyst.
+                    <Link href="/" className="block">
+                        <img
+                            src="/catalystLogos/TIPOGRAFIA/SVG/tipografiaBlanca-S.svg"
+                            alt="Catalyst"
+                            className="h-[40px] w-[162px] object-cover object-center"
+                        />
                     </Link>
                 </div>
 
