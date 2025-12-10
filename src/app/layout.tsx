@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 export const metadata: Metadata = {
     title: "Catalyst - AI & Automation Solutions",
     description: "Catalyst is an agency dedicated to efficiency for SMEs, developing custom automation and AI systems.",
+    icons: {
+        icon: "/catalystLogos/ICONOGRAFIA/SVG/catalystIconografiaFondoNegro.svg",
+    },
 };
 
 import { Providers } from "@/components/layout/Providers";
