@@ -1,12 +1,12 @@
 import Hero from "@/components/home/Hero";
 import PartnersCarousel from "@/components/home/PartnersCarousel";
 import InvisibleWorkforceV3 from "@/components/home/InvisibleWorkforceV3";
+import { CoreProducts } from "@/components/home/CoreProducts";
 import CatalystAdvantage from "@/components/home/CatalystAdvantage";
 import { SalesTeamHeadline } from "@/components/home/SalesTeamHeadline";
 import { SalesProblem } from "@/components/home/SalesProblem";
 import IntegrationsCarousel from "@/components/home/IntegrationsCarousel";
-import StickyScrollFeatures from "../components/home/StickyScrollFeatures";
-import MobileFeatures from "@/components/home/MobileFeatures";
+import MobileFeatures from "@/components/trash/MobileFeatures";
 import Footer from "@/components/layout/Footer";
 
 export default function Home() {
@@ -27,8 +27,9 @@ export default function Home() {
             {/* Sección de Fuerza Laboral Invisible (Velocity Engine V3) */}
             <InvisibleWorkforceV3 />
 
-            {/* Sección de Features (Desktop) */}
-            <StickyScrollFeatures />
+            {/* Core Products Showcase (Living Interface) */}
+            <CoreProducts />
+
 
             {/* Sección de Integrations */}
             <IntegrationsCarousel />
