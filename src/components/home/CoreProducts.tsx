@@ -2,31 +2,34 @@
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useSpring, useMotionValue, useMotionTemplate } from "framer-motion";
-import { MessageCircle, Globe, Calendar, Check, Send, Bot, Database, MessageSquare, Zap, Clock, ArrowRight, Activity, Smartphone, Search, Lock, ChevronRight } from "lucide-react";
+import { MessageCircle, Globe, Calendar, Check, Send, Bot, Database, MessageSquare, Zap, Clock, ArrowRight, Activity, Smartphone, Search, Lock, ChevronRight, ChevronLeft, Store, MoreVertical, Plus, Camera, Sticker, Mic, Wifi, Battery, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // --- Data Configuration ---
 const products = [
     {
         id: "host",
-        title: "Catalyst Host",
+        name: "Catalyst Host",
+        title: "Deja de chatear. Empieza a facturar.",
         tagline: "Ventas Automáticas",
-        description: "Tu WhatsApp se convierte en un agente de ventas autónomo. Entiende contexto, detecta intención de compra y cierra tratos mientras te concentras en crecer.",
+        description: "Tu WhatsApp no debería ser una agenda, debería ser tu mejor vendedor. Nuestra IA no solo responde: negocia, hace upselling y cierra ventas por ti las 24/7. Se adapta a la voz de tu marca —ya vendas sneakers exclusivos o hamburguesas gourmet— para que tus clientes sientan que hablan contigo, mientras tú solo ves llegar las notificaciones de pago.",
         features: ["Upselling IA", "Recuperación de Carritos", "Lead Scoring"],
         color: "#4ADE80", // Green-400
         visualType: "whatsapp_ui"
     },
     {
         id: "cx",
-        title: "Catalyst CX",
+        name: "Catalyst CX",
+        title: "Tu empresa, omnipresente y omnisciente.",
         tagline: "Inteligencia Central",
-        description: "Un cerebro digital conectado a todo. Entrenamos a la IA con tus manuales y bases de datos para dar soporte técnico de nivel experto en cualquier canal.",
+        description: "Centraliza el conocimiento de toda tu organización en un solo cerebro digital. Entrenamos a CatalystCX con tus manuales y bases de datos para brindar soporte técnico y atención al cliente de nivel experto, sin alucinaciones y en cualquier canal. Una IA que domina tanto tu producto que no solo resuelve incidencias... sabe identificar el momento exacto para ofrecer una mejora y cerrar una nueva venta.",
         features: ["RAG con PDFs", "Omnicanalidad", "Memoria Infinita"],
         color: "#A78BFA", // Violet-400
         visualType: "omnichannel_ui"
     },
     {
         id: "agenda",
+        name: "Catalyst Agenda",
         title: "Catalyst Agenda",
         tagline: "Gestión de Tiempo",
         description: "Tu secretaria virtual perfecta. Filtra curiosos, califica prospectos reales y gestiona tu Google Calendar para llenar tu semana solo con reuniones de alto valor.",
@@ -93,27 +96,27 @@ export const CoreProducts = () => {
                                 animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                                 exit={{ opacity: 0, x: 30, filter: "blur(10px)" }}
                                 transition={{ duration: 0.5, ease: "circOut" }}
-                                className="space-y-6 lg:space-y-10"
+                                className="space-y-5 lg:space-y-8"
                             >
                                 {/* Tagline Chip */}
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur w-fit">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur w-fit mt-12 lg:mt-0">
                                     <span className="relative flex h-2 w-2">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: products[activeCard].color }}></span>
                                         <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: products[activeCard].color }}></span>
                                     </span>
                                     <span className="text-[10px] uppercase tracking-widest font-bold text-white/70">
-                                        System: {products[activeCard].tagline}
+                                        System: {products[activeCard].name}
                                     </span>
                                 </div>
 
                                 {/* Staggered Title Reveal */}
                                 <motion.h2
-                                    className="text-5xl lg:text-7xl font-black leading-[0.9] tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white/80 to-white/20"
+                                    className="text-3xl lg:text-5xl font-black leading-[1.1] tracking-tighter text-white drop-shadow-2xl"
                                 >
                                     {products[activeCard].title.split(" ").map((word, i) => (
                                         <motion.span
                                             key={i}
-                                            className="inline-block mr-3"
+                                            className="inline-block mr-1.5 lg:mr-2.5"
                                             initial={{ y: 20, opacity: 0 }}
                                             animate={{ y: 0, opacity: 1 }}
                                             transition={{ delay: 0.1 * i, type: "spring" }}
@@ -123,24 +126,23 @@ export const CoreProducts = () => {
                                     ))}
                                 </motion.h2>
 
-                                <p className="text-lg lg:text-xl text-neutral-400 leading-relaxed font-light max-w-xl">
+                                <p className="text-sm lg:text-base text-white/80 leading-relaxed font-light max-w-lg drop-shadow-md">
                                     {products[activeCard].description}
                                 </p>
 
                                 {/* Interactive Feature Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4">
+                                {/* Interactive Feature Grid */}
+                                <div className="flex flex-wrap gap-2.5 pt-0">
                                     {products[activeCard].features.map((feature, idx) => (
                                         <motion.div
                                             key={idx}
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             transition={{ delay: 0.3 + (idx * 0.1) }}
-                                            className="flex items-center gap-3 group"
+                                            className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm group hover:border-white/30 transition-colors"
                                         >
-                                            <div className="p-2 rounded-lg bg-neutral-900 border border-white/5 group-hover:border-white/20 transition-colors">
-                                                <Check className="w-4 h-4" style={{ color: products[activeCard].color }} />
-                                            </div>
-                                            <span className="text-sm text-neutral-300 font-medium group-hover:text-white transition-colors">
+                                            <Check className="w-3.5 h-3.5" style={{ color: products[activeCard].color }} />
+                                            <span className="text-sm text-neutral-200 font-medium group-hover:text-white transition-colors">
                                                 {feature}
                                             </span>
                                         </motion.div>
@@ -162,25 +164,43 @@ export const CoreProducts = () => {
                     {/* RIGHT: High-Fidelity Visual Engine (Interactive 3D) */}
                     <div className="w-full lg:w-1/2 flex items-center justify-center lg:justify-end h-[40vh] lg:h-auto pointer-events-auto perspective-1000">
                         <motion.div
+                            layout
                             style={{ scale: scaleAnim }}
-                            className="w-full max-w-[600px] aspect-square relative"
+                            className={cn(
+                                "relative transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] mx-auto",
+                                products[activeCard].visualType === "whatsapp_ui"
+                                    ? "w-full max-w-[320px] aspect-[9/19.5]"
+                                    : "w-full max-w-[600px] aspect-square"
+                            )}
                         >
-                            <PrismaticCard activeColor={products[activeCard].color}>
-                                <AnimatePresence mode="wait">
+                            <AnimatePresence mode="wait">
+                                {products[activeCard].visualType === "whatsapp_ui" ? (
                                     <motion.div
-                                        key={products[activeCard].id}
-                                        initial={{ opacity: 0, rotateX: 10, y: 50 }}
-                                        animate={{ opacity: 1, rotateX: 0, y: 0 }}
-                                        exit={{ opacity: 0, rotateX: -10, y: -50, filter: "blur(10px)" }}
+                                        key="whatsapp_container"
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8, filter: "blur(20px)" }}
                                         transition={{ duration: 0.6, ease: "backOut" }}
-                                        className="w-full h-full"
+                                        className="w-full h-full flex items-center justify-center"
                                     >
-                                        {products[activeCard].visualType === "whatsapp_ui" && <WhatsAppVisual color={products[activeCard].color} />}
-                                        {products[activeCard].visualType === "omnichannel_ui" && <OmnichannelVisual color={products[activeCard].color} />}
-                                        {products[activeCard].visualType === "calendar_ui" && <CalendarVisual color={products[activeCard].color} />}
+                                        <WhatsAppVisual color={products[activeCard].color} />
                                     </motion.div>
-                                </AnimatePresence>
-                            </PrismaticCard>
+                                ) : (
+                                    <PrismaticCard key="generic_container" activeColor={products[activeCard].color}>
+                                        <motion.div
+                                            key={products[activeCard].id}
+                                            initial={{ opacity: 0, rotateX: 10, y: 50 }}
+                                            animate={{ opacity: 1, rotateX: 0, y: 0 }}
+                                            exit={{ opacity: 0, rotateX: -10, y: -50, filter: "blur(10px)" }}
+                                            transition={{ duration: 0.6, ease: "backOut" }}
+                                            className="w-full h-full"
+                                        >
+                                            {products[activeCard].visualType === "omnichannel_ui" && <OmnichannelVisual color={products[activeCard].color} />}
+                                            {products[activeCard].visualType === "calendar_ui" && <CalendarVisual color={products[activeCard].color} />}
+                                        </motion.div>
+                                    </PrismaticCard>
+                                )}
+                            </AnimatePresence>
                         </motion.div>
                     </div>
 
@@ -295,73 +315,267 @@ const PrismaticCard = ({ children, activeColor }: { children: React.ReactNode, a
 
 // --- 1. WHATSAPP UI REFINED ---
 
-const WhatsAppVisual = ({ color }: { color: string }) => (
-    <div className="flex flex-col h-full bg-[#0b141a] rounded-xl overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] opacity-[0.05] pointer-events-none" />
+const PhoneFrame = ({ children, color }: { children: React.ReactNode, color: string }) => (
+    <div className="relative w-full h-[550px] bg-black rounded-[3rem] border-[8px] border-[#121212] overflow-hidden shadow-2xl ring-1 ring-white/10">
+        {/* Dynamic Island / Notch */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-full z-50 flex items-center justify-center gap-2 px-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#1c1c1e]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#0c2f6f]/50" />
+        </div>
 
-        {/* Chat Header */}
-        <div className="bg-[#202c33] p-4 flex items-center gap-4 z-10 shadow-md">
-            <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-black overflow-hidden border border-white/10 flex items-center justify-center">
-                    <Bot className="w-6 h-6 text-green-500" />
-                </div>
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#202c33] rounded-full animate-pulse" />
+        {/* StatusBar Time (Mock) */}
+        <div className="absolute top-5 left-7 text-[10px] font-medium text-white/90 z-50">9:41</div>
+        <div className="absolute top-5 right-6 flex gap-1 items-center z-50">
+            {/* Signal */}
+            <div className="flex items-end gap-[1px]">
+                <div className="w-[2px] h-[3px] bg-white/40 rounded-[0.5px]" />
+                <div className="w-[2px] h-[5px] bg-white/40 rounded-[0.5px]" />
+                <div className="w-[2px] h-[7px] bg-white rounded-[0.5px]" />
+                <div className="w-[2px] h-[9px] bg-white rounded-[0.5px]" />
             </div>
-            <div>
-                <h4 className="font-medium text-white text-sm">Catalyst AI</h4>
-                <p className="text-xs text-[#8696a0]">Business Account</p>
+            {/* WiFi */}
+            <Wifi className="w-3 h-3 text-white stroke-[2.5]" />
+            {/* Battery */}
+            <div className="w-[16px] h-[8px] border-[1px] border-white/40 rounded-[2px] p-[0.5px] relative ml-0.5">
+                <div className="h-full w-[60%] bg-white rounded-[0.5px]" />
+                <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-[1px] h-[2.5px] bg-white/40 rounded-[0.5px]" />
             </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 p-6 space-y-6 overflow-hidden flex flex-col justify-end relative z-10">
-            <WABubble isUser={false} delay={0.2} time="10:00 AM">
-                Hola 👋 Bienvenido a Catalyst. ¿Cómo podemos escalar tu negocio hoy?
-            </WABubble>
-
-            <WABubble isUser={true} delay={1.0} time="10:05 AM">
-                Necesito automatizar mis citas médicas.
-            </WABubble>
-
-            <WABubble isUser={false} delay={2.0} time="10:05 AM">
-                ¡Perfecto! 🏥 Nuestro módulo **Agenda AI** se conecta con tu calendario y califica pacientes automáticamente.
-            </WABubble>
-
-            {/* Smart Chips */}
-            <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 3.5 }}
-                className="flex gap-2 mt-2"
-            >
-                <span className="px-3 py-1.5 rounded-full bg-[#202c33] text-[#00a884] text-xs font-medium border border-[#00a884]/30 cursor-pointer hover:bg-[#00a884]/10 transition-colors">
-                    Ver Demo
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#202c33] text-[#00a884] text-xs font-medium border border-[#00a884]/30 cursor-pointer hover:bg-[#00a884]/10 transition-colors">
-                    Precios
-                </span>
-            </motion.div>
+        {/* Content */}
+        <div className="w-full h-full bg-[#0b141a] flex flex-col">
+            {children}
         </div>
+
+        {/* Home Indicator */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-50" />
     </div>
-)
+);
+
+const TypingIndicator = () => (
+    <motion.div
+        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="self-start max-w-[85%] bg-[#202c33] p-2 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1 w-fit"
+    >
+        {[0, 1, 2].map((i) => (
+            <motion.span
+                key={i}
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+                className="w-1 h-1 bg-[#8696a0] rounded-full"
+            />
+        ))}
+    </motion.div>
+);
 
 const WABubble = ({ isUser, children, delay, time }: any) => (
     <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ delay, type: "spring" }}
+        transition={{ delay, type: "spring", stiffness: 400, damping: 20 }}
         className={cn(
-            "max-w-[85%] p-2 px-3 rounded-lg text-sm relative shadow-sm",
-            isUser ? "bg-[#005c4b] self-end rounded-tr-none" : "bg-[#202c33] self-start rounded-tl-none"
+            "max-w-[85%] p-1.5 px-2.5 rounded-lg text-xs relative shadow-sm leading-relaxed whitespace-pre-wrap",
+            isUser ? "bg-[#005c4b] self-end rounded-tr-none" : "bg-[#202c33] self-start rounded-tl-none text-white/90"
         )}
     >
-        <span className="text-[#e9edef]">{children}</span>
-        <div className="flex justify-end items-center gap-1 mt-1">
-            <span className="text-[10px] text-[#8696a0]">{time}</span>
-            {isUser && <div className="text-[#53bdeb] text-[10px]">✓✓</div>}
+        {/* Tail SVG */}
+        <svg
+            viewBox="0 0 8 13"
+            className={cn("absolute top-0 w-1.5 h-2.5 fill-current", isUser ? "-right-1.5 text-[#005c4b]" : "-left-1.5 text-[#202c33] scale-x-[-1]")}
+        >
+            <path d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
+        </svg>
+
+        <span className="text-[#e9edef] relative z-10">{children}</span>
+        <div className="flex justify-end items-center gap-0.5 mt-0.5 opacity-60">
+            <span className="text-[9px]">{time}</span>
+            {isUser && <span className="text-[#53bdeb] text-[9px] font-bold">✓✓</span>}
         </div>
     </motion.div>
-)
+);
+
+// --- 2. PAYMENT BUBBLE COMPONENT ---
+
+const PaymentBubble = () => (
+    <motion.div
+        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        className="max-w-[85%] bg-[#202c33] rounded-lg rounded-tl-none overflow-hidden shadow-md self-start mt-1"
+    >
+        <div className="bg-[#2a3942] p-3 flex items-center gap-3 border-b border-white/5">
+            <div className="w-10 h-10 rounded-full bg-[#00a884]/20 flex items-center justify-center">
+                <Lock className="w-5 h-5 text-[#00a884]" />
+            </div>
+            <div>
+                <h4 className="text-white text-xs font-semibold">Pago Seguro</h4>
+                <p className="text-[#8696a0] text-[10px]">Stripe / PayPal</p>
+            </div>
+        </div>
+        <div className="p-3">
+            <p className="text-[#e9edef] text-sm font-medium mb-1">Total a Pagar</p>
+            <p className="text-2xl text-white font-bold mb-3">$145.00</p>
+            <button className="w-full bg-[#00a884] hover:bg-[#008f6f] text-black text-xs font-bold py-2 rounded-md transition-colors flex items-center justify-center gap-2">
+                <CreditCard className="w-3.5 h-3.5" />
+                Pagar Ahora
+            </button>
+        </div>
+        <div className="bg-[#182229] p-1.5 flex justify-center">
+            <span className="text-[9px] text-[#8696a0]">Link expires in 15:00</span>
+        </div>
+    </motion.div>
+);
+
+// --- 3. SCRIPT CONFIGURATION (Slower & Looping) ---
+
+const CHAT_SCRIPT = [
+    { id: 1, role: "user", text: "Hola, ¿tienen disponibilidad de las AirForce 1 en blanco?", delay: 1000 },
+    { id: 2, role: "ai", text: "¡Hola! 👋 Sí, justo nos quedan los últimos 3 pares en stock. ¿Te gustaría asegurar el tuyo ahora mismo?", delay: 4000 },
+    { id: 3, role: "user", text: "Sí, por favor.", delay: 7500 },
+    { id: 4, role: "ai", text: "¡Perfecto! Oye, un tip rápido: 🔥 La mayoría se lleva el Kit de Limpieza Nano para que no se ensucien nunca.", delay: 11000 },
+    { id: 5, role: "ai", text: "Te lo dejo con 20% de descuento si lo agregas a esta orden. ¿Lo sumamos?", delay: 14000 },
+    { id: 6, role: "user", text: "Mmm... vale, agrégalo.", delay: 17500 },
+    { id: 7, role: "ai", text: "¡Excelente decisión! 🎉 Tu total con el descuento es $145.", delay: 20500 },
+    { id: 8, role: "ai", text: "Por favor selecciona tu forma de pago preferida: \n\n1️⃣ Efectivo (Contra entrega) \n\n2️⃣ Transferencia Bancaria \n\n3️⃣ Tarjeta de Crédito/Débito 💳", delay: 24000 },
+    { id: 9, role: "user", text: "Tarjeta de Crédito 💳", delay: 28000 },
+    { id: 10, role: "ai", text: "¡Entendido! Generando enlace de pago seguro... 🔒", delay: 30000 },
+    { id: 11, role: "ai", type: "payment", delay: 32500 }
+];
+
+const WhatsAppVisual = ({ color }: { color: string }) => {
+    const [messages, setMessages] = useState<any[]>([]);
+    const [isTyping, setIsTyping] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [restartTrigger, setRestartTrigger] = useState(0); // For looping
+
+    useEffect(() => {
+        let timeouts: NodeJS.Timeout[] = [];
+        setMessages([]); // Reset on start
+        setIsTyping(false);
+
+        const startSequence = () => {
+            // Initial Message (User)
+            timeouts.push(setTimeout(() => {
+                setMessages([{ ...CHAT_SCRIPT[0], time: "10:00 AM" }]);
+            }, CHAT_SCRIPT[0].delay));
+
+            // Process rest of script
+            CHAT_SCRIPT.slice(1).forEach((msg, index) => {
+                // Typing indicator logic for AI messages
+                if (msg.role === "ai") {
+                    // Start typing earlier
+                    timeouts.push(setTimeout(() => setIsTyping(true), msg.delay - 1500));
+                    // Stop typing and show message
+                    timeouts.push(setTimeout(() => {
+                        setIsTyping(false);
+                        setMessages(prev => [...prev, { ...msg, time: "10:0% AM".replace("%", (index + 1).toString()) }]);
+                    }, msg.delay));
+                } else {
+                    // User response (simulate delay without typing indicator)
+                    timeouts.push(setTimeout(() => {
+                        setMessages(prev => [...prev, { ...msg, time: "10:0% AM".replace("%", (index + 1).toString()) }]);
+                    }, msg.delay));
+                }
+            });
+
+            // Loop: Restart after the last message + extra buffer
+            const totalDuration = CHAT_SCRIPT[CHAT_SCRIPT.length - 1].delay + 6000;
+            timeouts.push(setTimeout(() => {
+                setRestartTrigger(prev => prev + 1);
+            }, totalDuration));
+        };
+
+        startSequence();
+
+        return () => timeouts.forEach(clearTimeout);
+    }, [restartTrigger]);
+
+    // Auto-scroll to bottom
+    useEffect(() => {
+        if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+    }, [messages, isTyping]);
+
+    return (
+        <PhoneFrame color={color}>
+            {/* Chat Background Pattern */}
+            <div className="absolute inset-0 bg-[url('/background/wp_132_dark.jpg')] bg-cover bg-center opacity-30 pointer-events-none" />
+
+            {/* Chat Header */}
+            <div className="bg-[#202c33] pt-12 pb-2 px-3 flex items-center gap-2 z-10 shadow-sm border-b border-[#2c3840]">
+                <ChevronLeft className="w-5 h-5 text-[#00a884] -ml-1" />
+                <div className="relative">
+                    <div className="w-8 h-8 rounded-full bg-black overflow-hidden border border-white/10 flex items-center justify-center">
+                        <img
+                            src="/catalystLogos/ICONOGRAFIA/SVG/iconografiaFONDOblanco.svg"
+                            alt="Catalyst Logo"
+                            className="w-full h-full object-cover scale-110"
+                        />
+                    </div>
+                    {/* Online Status Dot */}
+                    <span className="absolute bottom-0 right-0 w-2 h-2 bg-[#00a884] border-2 border-[#202c33] rounded-full animate-bounce-subtle" />
+                </div>
+                <div className="flex-1">
+                    <h4 className="font-semibold text-white/95 text-xs flex items-center gap-1">
+                        Catalyst AI
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#00a884] flex items-center justify-center text-[6px] text-black font-bold">✔</span>
+                    </h4>
+                    <p className="text-[9px] text-[#8696a0]">Business Account</p>
+                </div>
+                <div className="flex gap-4 items-center text-white/90">
+                    <Store className="w-4 h-4" />
+                    <Search className="w-4 h-4" />
+                    <MoreVertical className="w-4 h-4" />
+                </div>
+            </div>
+
+            {/* Messages Area - Custom Scrollbar (Hidden) */}
+            <div
+                ref={containerRef}
+                className="flex-1 p-3 space-y-3 overflow-y-auto flex flex-col relative z-20 scroll-smooth no-scrollbar"
+            >
+
+                {/* Timestamp */}
+                <div className="flex justify-center my-2 shrink-0">
+                    <span className="bg-[#182229] text-[#8696a0] text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md shadow-sm border border-white/5">
+                        Hoy
+                    </span>
+                </div>
+
+                <AnimatePresence mode="popLayout" initial={false}>
+                    {messages.map((msg) => (
+                        msg.type === "payment" ? (
+                            <PaymentBubble key={msg.id} />
+                        ) : (
+                            <WABubble key={msg.id} isUser={msg.role === "user"} time={msg.time}>
+                                {msg.text}
+                            </WABubble>
+                        )
+                    ))}
+                    {isTyping && <TypingIndicator key="typing" />}
+                </AnimatePresence>
+            </div>
+
+            {/* Footer Input Mock (iOS Style) */}
+            <div className="bg-[#202c33] p-1.5 pb-6 px-3 flex items-center gap-3 z-30 border-t border-[#2c3840]">
+                <Plus className="w-5 h-5 text-[#53bdeb] stroke-[2.5]" />
+                <div className="flex-1 h-8 bg-[#2a3942] rounded-full flex items-center px-3 justify-between">
+                    <span className="text-[#8696a0] text-xs">Escribe un mensaje...</span>
+                    <Sticker className="w-4 h-4 text-[#8696a0]" />
+                </div>
+                <div className="flex gap-3 items-center">
+                    <Camera className="w-5 h-5 text-[#53bdeb] stroke-[2]" />
+                    <div className="w-5 h-5 bg-[#00a884] rounded-full flex items-center justify-center">
+                        <Mic className="w-3 h-3 text-white fill-current" />
+                    </div>
+                </div>
+            </div>
+        </PhoneFrame>
+    );
+};
 
 // --- 2. OMNICHANNEL BRAIN REFINED ---
 
