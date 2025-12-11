@@ -85,7 +85,6 @@ export function SalesProblem() {
                 </motion.div>
 
                 {/* Ambient Particles/Noise Overlay could go here */}
-                <div className="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
 
                 {/* Fade to Black Gradient */}
                 <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black via-black/80 to-transparent z-30 pointer-events-none" />

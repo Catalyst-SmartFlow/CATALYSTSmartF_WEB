@@ -48,12 +48,12 @@ function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
 
             {/* Base Scale Wrapper */}
             <div className="w-full h-full flex items-center justify-center" style={{ transform: `scale(${partner.scale || 1})` }}>
-                <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-105 ${isLoading ? 'opacity-0' : 'opacity-80 group-hover/logo:opacity-100'}`}>
+                <div className={`w-full h-full relative flex items-center justify-center transition-all duration-500 transform group-hover/logo:scale-110 ${isLoading ? 'opacity-0' : 'opacity-70 group-hover/logo:opacity-100'}`}>
                     <Image
                         src={partner.logo}
                         alt={partner.name}
                         fill
-                        className="object-contain p-2 drop-shadow-lg"
+                        className={`object-contain p-2 drop-shadow-lg transition-all duration-500 group-hover/logo:grayscale-0 group-hover/logo:brightness-100 group-hover/logo:invert-0 ${partner.name === "Espiral Edu" ? "grayscale" : "grayscale brightness-0 invert"}`}
                         onLoad={() => setIsLoading(false)}
                         draggable={false}
                     />

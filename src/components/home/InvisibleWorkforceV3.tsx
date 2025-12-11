@@ -142,7 +142,7 @@ function CardVisual({ type }: { type: string }) {
                             borderColor: ["rgba(139, 92, 246, 0.2)", "rgba(139, 92, 246, 0.2)", "rgba(139, 92, 246, 1)", "rgba(139, 92, 246, 0.5)"]
                         }}
                         transition={{ duration: 4, times: [0, 0.4, 0.45, 0.55, 1], repeat: Infinity, repeatDelay: 1 }}
-                        className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center"
+                        className="h-10 w-10 index-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center"
                     >
                         <CalendarCheck className="w-5 h-5 text-violet-400" />
                     </motion.div>
@@ -263,19 +263,30 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
 
     const isLast = index === 2; // Hardcoded or features.length - 1
 
-    // Timeline adjustments
-    // Shifted earlier to ensure last card appears before scroll ends (1.0)
-    // Intro Title: 0.0 - 0.35
-    // Cards Start: 0.35
-    const baseStart = 0.35;
+    // === TIMELINE TUNING (SLOWER) ===
+    // Increased scroll range means we can start earlier and spread out more.
+    // Base Start: 0.20 (Earlier than 0.35)
+    // Step: 0.25 (Good spacing)
+
+    const baseStart = 0.20;
     const step = 0.25;
     const start = baseStart + (index * step);
 
-    // Duration:
-    // Non-last cards exit quickly to avoid overlapping the next one too much.
-    // Next card starts at `start + step`. We want this card to fade out shortly after that.
-    const fadeOutStart = start + step;
-    const fadeOutEnd = start + step + 0.15; // Quick fade out as next one rises
+    // Duration & Hold Logic:
+    // We want a "Hold" phase where the card stays at Opacity 1 / Center BEFORE fading out.
+    // Previous: fadeOutStart = start + step -> fadeOutEnd (0.15 later)
+    // New: fadeOutStart = start + step + 0.05 -> Ends 0.15 later.
+    // This adds a 0.05 scroll range (approx 5-10% more time) of pure overlap/hold.
+
+    // Note for Card 1 (Start 0.20):
+    // - Enters: 0.20 -> 0.30
+    // - Next Card Starts: 0.45
+    // - Card 1 Fades Start: 0.45 + 0.05 = 0.50
+    // - Card 1 Fades End: 0.65
+    // Result: Card 1 is fully visible from 0.30 to 0.50 (Large window).
+
+    const fadeOutStart = start + step + 0.05;
+    const fadeOutEnd = fadeOutStart + 0.15;
 
     const end = isLast ? 1 : fadeOutEnd;
 
@@ -294,7 +305,7 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
         : [start, start + 0.1, fadeOutStart, fadeOutEnd];
 
     const scaleOutput = isLast
-        ? [0.8, 1, 1] // Last card stays full scale (or 1)
+        ? [0.8, 1, 1] // Last card stays full scale
         : [0.8, 1, 1, 0.6]; // Others scale down to 0.6 on exit
 
     // Movement Logic
@@ -307,7 +318,7 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
 
     const yInitial = 150;
     // Y Logic:
-    // Non-Last: Enter (150) -> Center (0) -> Exit Up (-200)
+    // Non-Last: Enter (150) -> Center (0) -> HOLD (0) -> Exit Up (-200)
     // Last: Enter (150) -> Center (0) -> Stay (0)
     const yRange = isLast
         ? [start, start + 0.1, 1]
@@ -315,7 +326,11 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
 
     const yOutput = isLast
         ? [yInitial, 0, 0]
-        : (isFirst ? [0, 0, -200, -200] : [yInitial, 0, -200, -200]); // Ensure arrays match range length (4 items)
+        : (isFirst ? [0, 0, 0, -200] : [yInitial, 0, 0, -200]); // Note extra point for hold if needed, but framer interpolates linearly. 
+    // With 4 points in range, we need 4 points in output.
+    // Range: [start, start+0.1, fadeOutStart, fadeOutEnd]
+    // Output: [yInitial, 0, 0, -200] -> This maps Start=Yinit, Start+0.1=0, FadeStart=0, FadeEnd=-200.
+    // This creates a perfect flat hold at Y=0 between Start+0.1 and FadeStart!
 
     const opacity = useTransform(scrollYProgress, opacityRange, opacityOutput);
     const scale = useTransform(scrollYProgress, scaleRange, scaleOutput);
@@ -400,24 +415,47 @@ export default function InvisibleWorkforceV3() {
 
     const pathLength = useSpring(scrollYProgress, { stiffness: 400, damping: 90 });
 
+    // === ANIMACIONES PRINCIPALES: Flecha y Título ===
+
+    // Título Principal - Comportamiento Simplificado:
+    // - VISIBLE desde el inicio (scroll 0).
+    // - Se queda quieto y visible hasta que empiezan las cards.
+    // - Adjusted Exit: Ends by 0.25-0.30 (When card 1 is fully in).
+
+    // Card 1 starts at 0.20. Fully visible at 0.30.
+    // Title should fade out between 0.20 and 0.30.
+
+    const titleExitStart = 0.20;
+    const titleExitEnd = 0.30;
+
+    // Opacity: 1 (start) -> 1 (hold) -> 0 (exit)
+    const titleOpacity = useTransform(scrollYProgress, [0, titleExitStart, titleExitEnd], [1, 1, 0]);
+
+    // Scale: 1 (start) -> 1.1 (exit) - Ligero zoom al salir
+    const titleScale = useTransform(scrollYProgress, [0, titleExitStart, titleExitEnd], [1, 1, 1.1]);
+
+    // X: 0 (start) -> -50 (exit) - Ligero desplazamiento izquierda al salir
+    const titleX = useTransform(scrollYProgress, [0, titleExitStart, titleExitEnd], [0, 0, -50]);
+
+
     return (
-        // Altura ajustada: 300vh suele ser suficiente para 3 cards, 400vh puede sentirse lento.
-        <section ref={containerRef} className="relative h-[300vh] bg-black">
+        // Height increased to 450vh to slow down scroll speed
+        <section ref={containerRef} className="relative h-[450vh] bg-black">
             <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
 
-                {/* Header Section - Intro Animation (Slower & Bigger) */}
+                {/* Header Section - Intro Animation */}
                 <motion.div
                     style={{
-                        opacity: useTransform(scrollYProgress, [0, 0.15, 0.3, 0.4], [0, 1, 1, 0]), // Ends by 0.4
-                        x: useTransform(scrollYProgress, [0, 0.15, 0.3, 0.4], [100, 0, 0, -100]),
-                        scale: useTransform(scrollYProgress, [0, 0.15, 0.4], [0.9, 1, 1.1])
+                        opacity: titleOpacity,
+                        x: titleX,
+                        scale: titleScale
                     }}
                     className="absolute z-30 text-center px-4 w-full max-w-[90vw]"
                 >
-                    <h2 className="text-6xl md:text-9xl font-bold text-white mb-8 tracking-tighter leading-[0.85] uppercase">
+                    <h2 className="text-5xl md:text-8xl font-bold text-white mb-8 tracking-tighter leading-[1.5] uppercase">
                         La ventaja <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600 italic pr-4">injusta</span> <br /> de tu negocio
                     </h2>
-                    <p className="text-xl md:text-3xl text-zinc-400 font-light max-w-4xl mx-auto tracking-wide">
+                    <p className="text-lg md:text-2xl text-zinc-400 font-light max-w-4xl mx-auto tracking-wide">
                         Por qué tu competencia seguirá operando lento y tú no.
                     </p>
                 </motion.div>
