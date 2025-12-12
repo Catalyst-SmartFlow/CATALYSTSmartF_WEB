@@ -1,13 +1,15 @@
 import Hero from "@/components/home/Hero";
-import PartnersCarousel from "@/components/home/PartnersCarousel";
-import InvisibleWorkforceV3 from "@/components/home/InvisibleWorkforceV3";
-import { CoreProducts } from "@/components/home/CoreProducts";
-import CatalystAdvantage from "@/components/home/CatalystAdvantage";
-import { SalesTeamHeadline } from "@/components/home/SalesTeamHeadline";
-import { SalesProblem } from "@/components/home/SalesProblem";
-import IntegrationsCarousel from "@/components/home/IntegrationsCarousel";
-import MobileFeatures from "@/components/trash/MobileFeatures";
-import Footer from "@/components/layout/Footer";
+import dynamic from 'next/dynamic';
+
+const PartnersCarousel = dynamic(() => import("@/components/home/PartnersCarousel"));
+const InvisibleWorkforceV3 = dynamic(() => import("@/components/home/InvisibleWorkforceV3"));
+const CoreProducts = dynamic(() => import("@/components/home/CoreProducts").then(mod => mod.CoreProducts));
+const CatalystAdvantage = dynamic(() => import("@/components/home/CatalystAdvantage"));
+const SalesTeamHeadline = dynamic(() => import("@/components/home/SalesTeamHeadline").then(mod => mod.SalesTeamHeadline));
+const SalesProblem = dynamic(() => import("@/components/home/SalesProblem").then(mod => mod.SalesProblem));
+const IntegrationsCarousel = dynamic(() => import("@/components/home/IntegrationsCarousel"));
+const MobileFeatures = dynamic(() => import("@/components/trash/MobileFeatures"));
+const Footer = dynamic(() => import("@/components/layout/Footer"));
 
 export default function Home() {
     return (
