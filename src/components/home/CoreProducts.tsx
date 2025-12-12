@@ -6,6 +6,7 @@ import { m, useScroll, useTransform, AnimatePresence, LazyMotion, domMax, useMot
 import { Check, ChevronRight, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { OmnichannelPrismVisual } from "./OmnichannelPrismVisual";
 // Dynamic Imports for Heavy Visuals
 const WhatsAppVisual = dynamic(() => import("./CoreProductsVisuals").then(mod => mod.WhatsAppVisual), {
     ssr: false,
@@ -202,7 +203,11 @@ export const CoreProducts = () => {
                                             <WhatsAppVisual color={products[activeCard].color} />
                                         </m.div>
                                     ) : (
-                                        <PrismaticCard key="generic_container" activeColor={products[activeCard].color}>
+                                        <PrismaticCard
+                                            key="generic_container"
+                                            activeColor={products[activeCard].color}
+                                            hideHeader={products[activeCard].id === 'cx'}
+                                        >
                                             <m.div
                                                 key={products[activeCard].id}
                                                 initial={{ opacity: 0, rotateX: 10, y: 50 }}
@@ -211,7 +216,7 @@ export const CoreProducts = () => {
                                                 transition={{ duration: 0.6, ease: "backOut" }}
                                                 className="w-full h-full"
                                             >
-                                                {products[activeCard].visualType === "omnichannel_ui" && <OmnichannelVisual color={products[activeCard].color} />}
+                                                {products[activeCard].visualType === "omnichannel_ui" && <OmnichannelPrismVisual activeColor={products[activeCard].color} />}
                                                 {products[activeCard].visualType === "calendar_ui" && <CalendarVisual color={products[activeCard].color} />}
                                             </m.div>
                                         </PrismaticCard>
@@ -278,7 +283,7 @@ const CinematicBackground = ({ activeColor }: { activeColor: string }) => (
     </div>
 );
 
-const PrismaticCard = ({ children, activeColor }: { children: React.ReactNode, activeColor: string }) => {
+const PrismaticCard = ({ children, activeColor, hideHeader = false }: { children: React.ReactNode, activeColor: string, hideHeader?: boolean }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -297,7 +302,7 @@ const PrismaticCard = ({ children, activeColor }: { children: React.ReactNode, a
             onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
             className="relative w-full h-full rounded-2xl overflow-hidden group perspective-1000"
         >
-            <div className="absolute inset-0 bg-white/5 border border-white/10 backdrop-blur-md z-10 rounded-2xl transition-all duration-500 group-hover:border-white/20">
+            <div className="absolute inset-0 bg-white/5 border border-white/10 backdrop-blur-md z-10 rounded-2xl transition-all duration-500 group-hover:border-white/20 flex flex-col">
                 {/* Dynamic Spotlight */}
                 <m.div
                     className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
@@ -312,17 +317,19 @@ const PrismaticCard = ({ children, activeColor }: { children: React.ReactNode, a
                     }}
                 />
 
-                <div className="h-10 w-full bg-white/5 border-b border-white/5 backdrop-blur-md flex items-center px-6 justify-between z-20">
-                    <div className="flex gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+                {!hideHeader && (
+                    <div className="h-10 w-full bg-white/5 border-b border-white/5 backdrop-blur-md flex items-center px-6 justify-between z-20">
+                        <div className="flex gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Lock className="w-3 h-3 text-white/30" />
+                            <span className="text-[10px] text-white/30 font-mono">SECURE_CONNECTION</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Lock className="w-3 h-3 text-white/30" />
-                        <span className="text-[10px] text-white/30 font-mono">SECURE_CONNECTION</span>
-                    </div>
-                </div>
+                )}
 
                 <div className="flex-1 relative p-2 lg:p-4 text-white font-sans overflow-hidden">
                     {children}
