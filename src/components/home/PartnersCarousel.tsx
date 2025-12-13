@@ -53,6 +53,8 @@ function PartnerLogo({ partner }: { partner: typeof partners[0] }) {
                         src={partner.logo}
                         alt={partner.name}
                         fill
+                        loading="lazy"
+                        sizes="(max-width: 768px) 150px, 200px"
                         className={`object-contain p-2 drop-shadow-lg transition-all duration-500 group-hover/logo:grayscale-0 group-hover/logo:brightness-100 group-hover/logo:invert-0 ${partner.name === "Espiral Edu" ? "grayscale" : "grayscale brightness-0 invert"}`}
                         onLoad={() => setIsLoading(false)}
                         draggable={false}
