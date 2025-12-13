@@ -207,6 +207,7 @@ export const CoreProducts = () => {
                                             key="generic_container"
                                             activeColor={products[activeCard].color}
                                             hideHeader={products[activeCard].id === 'cx'}
+                                            transparent={products[activeCard].id === 'cx'}
                                         >
                                             <m.div
                                                 key={products[activeCard].id}
@@ -254,7 +255,7 @@ export const CoreProducts = () => {
                     />
                 </div>
             </section>
-        </LazyMotion>
+        </LazyMotion >
     );
 };
 
@@ -283,10 +284,18 @@ const CinematicBackground = ({ activeColor }: { activeColor: string }) => (
     </div>
 );
 
-const PrismaticCard = ({ children, activeColor, hideHeader = false }: { children: React.ReactNode, activeColor: string, hideHeader?: boolean }) => {
+const PrismaticCard = ({ children, activeColor, hideHeader = false, transparent = false }: { children: React.ReactNode, activeColor: string, hideHeader?: boolean, transparent?: boolean }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
+
+    const spotlightBg = useMotionTemplate`
+        radial-gradient(
+            650px circle at ${mouseX}px ${mouseY}px,
+            ${activeColor}15,
+            transparent 80%
+        )
+    `;
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;
@@ -302,22 +311,19 @@ const PrismaticCard = ({ children, activeColor, hideHeader = false }: { children
             onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
             className="relative w-full h-full rounded-2xl overflow-hidden group perspective-1000"
         >
-            <div className="absolute inset-0 bg-white/5 border border-white/10 backdrop-blur-md z-10 rounded-2xl transition-all duration-500 group-hover:border-white/20 flex flex-col">
+            <div className={cn(
+                "absolute inset-0 z-10 rounded-2xl transition-all duration-500 flex flex-col",
+                !transparent && "bg-white/5 border border-white/10 backdrop-blur-md group-hover:border-white/20"
+            )}>
                 {/* Dynamic Spotlight */}
-                <m.div
-                    className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
-                    style={{
-                        background: useMotionTemplate`
-                            radial-gradient(
-                                650px circle at ${mouseX}px ${mouseY}px,
-                                ${activeColor}15,
-                                transparent 80%
-                            )
-                        `,
-                    }}
-                />
+                {!transparent && (
+                    <m.div
+                        className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+                        style={{ background: spotlightBg }}
+                    />
+                )}
 
-                {!hideHeader && (
+                {(!hideHeader && !transparent) && (
                     <div className="h-10 w-full bg-white/5 border-b border-white/5 backdrop-blur-md flex items-center px-6 justify-between z-20">
                         <div className="flex gap-2">
                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
@@ -331,7 +337,7 @@ const PrismaticCard = ({ children, activeColor, hideHeader = false }: { children
                     </div>
                 )}
 
-                <div className="flex-1 relative p-2 lg:p-4 text-white font-sans overflow-hidden">
+                <div className={cn("flex-1 relative font-sans overflow-hidden", !transparent ? "p-2 lg:p-4 text-white" : "")}>
                     {children}
                 </div>
             </div>
