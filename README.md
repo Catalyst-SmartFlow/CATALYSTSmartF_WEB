@@ -33,3 +33,4 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 - **Estilos**: Tailwind CSS
 - **UI**: Shadcn/ui, Framer Motion
 - **3D**: React Three Fiber
+- **Auth**: Supabase Auth

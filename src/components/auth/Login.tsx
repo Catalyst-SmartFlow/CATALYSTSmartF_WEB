@@ -79,7 +79,9 @@ export default function Login() {
                         </motion.p>
                     </div>
 
-                    <SocialLogin mode="login" />
+                    <div className="mb-6">
+                        <SocialLogin mode="login" />
+                    </div>
 
                     <div className="relative mb-8">
                         <div className="absolute inset-0 flex items-center">
