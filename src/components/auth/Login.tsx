@@ -55,7 +55,7 @@ export default function Login() {
             >
                 {/* Ambient Lighting & Glows */}
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                    <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(109,40,217,0.08)_0%,transparent_50%)] animate-pulse duration-[8000ms]" />
+                    <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(109,40,217,0.08)_0%,transparent_50%)] animate-pulse [animation-duration:8s]" />
                     <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                 </div>
 
@@ -79,7 +79,7 @@ export default function Login() {
                         </motion.p>
                     </div>
 
-                    <SocialLogin />
+                    <SocialLogin mode="login" />
 
                     <div className="relative mb-8">
                         <div className="absolute inset-0 flex items-center">

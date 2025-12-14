@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -15,13 +16,33 @@ export default function Register() {
     const [isLoading, setIsLoading] = useState(false);
 
 
+    const searchParams = useSearchParams();
+
+    const router = useRouter();
+
+    useEffect(() => {
+        const error = searchParams.get("error");
+        console.log("Register Page Params:", error);
+
+        if (error) {
+            // Wait a bit to ensure UI is ready, then show toast
+            if (error === "account_already_exists") {
+                toast.error("Esta cuenta ya está registrada. Por favor inicia sesión.");
+            } else if (error === "oauth_failed") {
+                toast.error("Error al autenticar con Google/GitHub.");
+            }
+
+            // Clean the URL to avoid double toast on strict mode or refresh
+            router.replace(window.location.pathname);
+        }
+    }, [searchParams, router]);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
 
-
         const formData = new FormData(e.currentTarget);
-
+        // ... rest of submit logic
         try {
             const result = await registerUser(formData);
             if (result?.error) {
@@ -51,7 +72,7 @@ export default function Register() {
             >
                 {/* Ambient Lighting & Glows */}
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                    <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_50%)] animate-pulse duration-[8000ms]" />
+                    <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_50%)] animate-pulse [animation-duration:8s]" />
                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                 </div>
 
@@ -76,7 +97,7 @@ export default function Register() {
                     </div>
 
                     <div className="mb-6">
-                        <SocialLogin />
+                        <SocialLogin mode="register" />
                     </div>
 
                     <div className="relative mb-6">
