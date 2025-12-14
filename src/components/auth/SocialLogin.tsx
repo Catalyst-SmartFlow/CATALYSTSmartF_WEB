@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Github, Chrome } from "lucide-react"; // Using Chrome icon as Google proxy if specific Google icon isn't available, or simple text.
 import { useState } from "react";
 
-export function SocialLogin() {
+interface SocialLoginProps {
+    mode?: "login" | "register"; // Optional default to login
+}
+
+export function SocialLogin({ mode = "login" }: SocialLoginProps) {
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const [isGithubLoading, setIsGithubLoading] = useState(false);
 
@@ -15,12 +19,23 @@ export function SocialLogin() {
         if (provider === "google") setIsGoogleLoading(true);
         if (provider === "github") setIsGithubLoading(true);
 
+        // Security: Store the intent (login vs register) in a cookie to check on server callback
+        document.cookie = `auth_flow_mode=${mode}; path=/; max-age=300`; // 5 mins expiration
+
         try {
+            const returnUrl = `${location.origin}/auth/callback`;
+            console.log("OAuth Redirect URL:", returnUrl);
+            // ...
+
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: provider,
                 options: {
                     // This requires the /auth/callback route to be implemented!
-                    redirectTo: `${location.origin}/auth/callback`,
+                    redirectTo: returnUrl,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'select_account',
+                    },
                 },
             });
 

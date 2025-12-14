@@ -54,9 +54,24 @@ export async function updateSession(request: NextRequest) {
         }
     );
 
+    // Safe getUser call that handles invalid refresh tokens
     const {
         data: { user },
+        error,
     } = await supabase.auth.getUser();
+
+    // Handle Invalid Refresh Token / Session issues
+    if (error) {
+        const errorMsg = error.message || "";
+        // If the error is regarding the refresh token (or any auth error really), we should just treat it as "logged out"
+        // and let the flow continue (which will redirect to login if needed below).
+        // we definitely want to suppress the server noise and just clear cookies.
+
+        if (errorMsg.includes("Refresh Token Not Found") || errorMsg.includes("Invalid Refresh Token")) {
+            // Use supabase signOut to clear cookies properly using the configured adapter users
+            await supabase.auth.signOut();
+        }
+    }
 
     // ROUTE PROTECTION LOGIC
     // 1. If user is NOT logged in and tries to access dashboard or blocked routes -> Redirect to login
