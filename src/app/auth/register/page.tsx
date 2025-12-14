@@ -1,5 +1,6 @@
 import Register from "@/components/auth/Register";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function RegisterPage() {
     return (
@@ -14,7 +15,9 @@ export default function RegisterPage() {
                 </Link>
             </div>
             <div className="flex-1 flex items-center justify-center px-4">
-                <Register />
+                <Suspense fallback={<div className="text-white text-center">Cargando...</div>}>
+                    <Register />
+                </Suspense>
             </div>
         </div>
     );

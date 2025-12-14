@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
@@ -10,10 +11,32 @@ export async function GET(request: Request) {
 
     if (code) {
         const supabase = createClient();
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
-        if (!error) {
-            return NextResponse.redirect(`${origin}${next}`);
+        if (!error && data.user) {
+            // SECURITY CHECK: Strict Registration Flow
+            // If the user came from the "Register" page, we want to ensure they aren't logging into an existing account.
+            // Although standard OAuth usually allows this, the requirement is to show an error "Account already exists".
+
+            // Note: We need to use `cookies()` from next/headers.
+            const flowMode = cookies().get("auth_flow_mode")?.value;
+
+            if (flowMode === 'register') {
+                const createdAt = new Date(data.user.created_at).getTime();
+                const now = Date.now();
+                const isNewUser = (now - createdAt) < 60000; // Created within last 60 seconds
+
+                if (!isNewUser) {
+                    console.warn("Security: Existing user tried to use Register flow. Blocking.");
+                    await supabase.auth.signOut();
+                    return NextResponse.redirect(`${origin}/auth/register?error=account_already_exists`);
+                }
+            }
+
+            // Cleanup cookie (optional, but good hygiene)
+            const response = NextResponse.redirect(`${origin}${next}`);
+            response.cookies.delete("auth_flow_mode");
+            return response;
         } else {
             console.error("Auth Code Exchange Error:", error);
         }
