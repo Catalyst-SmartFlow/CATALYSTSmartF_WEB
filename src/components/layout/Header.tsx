@@ -89,7 +89,7 @@ export default function Header() {
                         <Link href="#" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
                             Ayuda
                         </Link>
-                        <Link href="#" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                        <Link href="/auth/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
                             Ingresar
                         </Link>
                     </nav>

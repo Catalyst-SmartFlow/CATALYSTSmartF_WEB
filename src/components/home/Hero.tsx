@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence, useMotionValue } from "framer-motion";
-import Scene from "./Scene";
+import { m, AnimatePresence, useMotionValue } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const Scene = dynamic(() => import("./Scene"), { ssr: false });
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useState, useEffect, useRef, MouseEvent } from "react";
@@ -28,7 +30,7 @@ function MagneticButton({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <motion.div
+        <m.div
             ref={ref}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -36,7 +38,7 @@ function MagneticButton({ children }: { children: React.ReactNode }) {
             transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
         >
             {children}
-        </motion.div>
+        </m.div>
     );
 }
 
@@ -75,7 +77,7 @@ export default function Hero() {
             <div className="z-10 flex flex-col items-center text-center px-4 max-w-6xl mx-auto w-full">
 
                 {/* Badge */}
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
@@ -83,7 +85,7 @@ export default function Hero() {
                 >
                     <Sparkles className="h-4 w-4 text-violet-400" />
                     <span className="font-medium tracking-wide">La evolución de tu negocio</span>
-                </motion.div>
+                </m.div>
 
                 {/* Headline */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white leading-[1.1] mb-8 drop-shadow-2xl">
@@ -94,7 +96,7 @@ export default function Hero() {
                         </span>
                         <span className="relative inline-block min-w-[280px] md:min-w-[420px] text-left">
                             <AnimatePresence mode="wait">
-                                <motion.span
+                                <m.span
                                     key={words[index]}
                                     initial={{ y: 40, opacity: 0, rotateX: -90 }}
                                     animate={{ y: 0, opacity: 1, rotateX: 0 }}
@@ -103,7 +105,7 @@ export default function Hero() {
                                     className="absolute left-0 top-0 text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-fuchsia-500 to-white filter drop-shadow-[0_0_30px_rgba(168,85,247,0.4)]"
                                 >
                                     {words[index]}
-                                </motion.span>
+                                </m.span>
                             </AnimatePresence>
                             <span className="invisible opacity-0" aria-hidden="true">Innovación</span>
                         </span>
@@ -111,7 +113,7 @@ export default function Hero() {
                 </h1>
 
                 {/* Subheadline */}
-                <motion.p
+                <m.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -119,10 +121,10 @@ export default function Hero() {
                 >
                     Transformamos operaciones manuales en sistemas autónomos de alto rendimiento.
                     <span className="text-zinc-200 block mt-1">Tu competencia ya está automatizando. ¿Y tú?</span>
-                </motion.p>
+                </m.p>
 
                 {/* CTA Button */}
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
@@ -142,14 +144,14 @@ export default function Hero() {
                             </Button>
                         </div>
                     </MagneticButton>
-                </motion.div>
+                </m.div>
 
 
 
             </div>
 
             {/* Scroll Indicator */}
-            <motion.div
+            <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 1 }}
@@ -157,13 +159,13 @@ export default function Hero() {
             >
                 <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-medium">Scroll</span>
                 <div className="w-[1px] h-12 bg-zinc-800/50 relative overflow-hidden">
-                    <motion.div
+                    <m.div
                         animate={{ top: ["-100%", "100%"] }}
                         transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                         className="absolute w-full h-full bg-gradient-to-b from-transparent via-violet-500 to-transparent"
                     />
                 </div>
-            </motion.div>
+            </m.div>
         </section>
     );
 }

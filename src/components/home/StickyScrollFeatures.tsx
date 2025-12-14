@@ -394,7 +394,7 @@ export default function StickyScrollFeatures() {
                                 <div
                                     key={item.id}
                                     className={cn(
-                                        "absolute inset-0 flex items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]",
+                                        "absolute inset-0 flex items-center justify-center transition-all duration-700 [transition-timing-function:cubic-bezier(0.25,1,0.5,1)]",
                                         activeCard === index
                                             ? "opacity-100 scale-100 translate-x-0"
                                             : index < activeCard
