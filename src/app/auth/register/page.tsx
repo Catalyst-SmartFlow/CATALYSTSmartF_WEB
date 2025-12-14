@@ -4,21 +4,8 @@ import { Suspense } from "react";
 
 export default function RegisterPage() {
     return (
-        <div className="min-h-screen flex flex-col bg-[#050505] relative">
-            <div className="p-8 md:absolute md:top-0 md:left-0 z-20">
-                <Link href="/" className="transition-opacity hover:opacity-80 block">
-                    <img
-                        src="/catalystLogos/TIPOGRAFIA/SVG/tipografiaBlanca-S.svg"
-                        alt="Catalyst"
-                        className="h-[40px] w-[162px] object-cover object-center"
-                    />
-                </Link>
-            </div>
-            <div className="flex-1 flex items-center justify-center px-4">
-                <Suspense fallback={<div className="text-white text-center">Cargando...</div>}>
-                    <Register />
-                </Suspense>
-            </div>
-        </div>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+            <Register />
+        </Suspense>
     );
 }

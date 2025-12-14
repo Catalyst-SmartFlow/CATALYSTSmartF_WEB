@@ -1,13 +1,12 @@
 "use client";
 
-
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Loader2, Mail, Lock, Github } from "lucide-react";
+import { ArrowRight, Loader2, Mail, Lock } from "lucide-react";
 import { loginUser } from "@/app/auth/login/actions";
 import { SocialLogin } from "./SocialLogin";
 import { toast } from "sonner";
@@ -15,11 +14,9 @@ import { toast } from "sonner";
 export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
 
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-
 
         const formData = new FormData(e.currentTarget);
 
@@ -27,9 +24,7 @@ export default function Login() {
             const result = await loginUser(formData);
 
             if (result?.error) {
-                // Handle Zod errors (object) or generic string
                 if (typeof result.error === 'object') {
-                    // Show first error of first field
                     const firstError = Object.values(result.error).flat()[0];
                     toast.error(firstError as string);
                 } else {
@@ -46,67 +41,52 @@ export default function Login() {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto p-6">
+        <div className="w-full">
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "backOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="bg-black/40 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
             >
-                {/* Ambient Lighting & Glows */}
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                    <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(109,40,217,0.08)_0%,transparent_50%)] animate-pulse [animation-duration:8s]" />
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-                </div>
+                {/* Subtle internal glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/10 rounded-full blur-[50px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
                 <div className="relative z-10">
-                    <div className="mb-8 text-center">
-                        <motion.h1
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="text-3xl font-bold tracking-tight text-white mb-2"
-                        >
-                            Bienvenido de nuevo
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className="text-zinc-400 text-sm"
-                        >
-                            Ingresa a tu cuenta para continuar
-                        </motion.p>
+                    <div className="mb-8">
+                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
+                            Bienvenido
+                        </h2>
+                        <p className="text-zinc-400 text-sm">
+                            Ingresa a tu cuenta
+                        </p>
                     </div>
 
                     <div className="mb-6">
                         <SocialLogin mode="login" />
                     </div>
 
-                    <div className="relative mb-8">
+                    <div className="relative mb-6">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-white/5"></div>
+                            <div className="w-full border-t border-white/10"></div>
                         </div>
                         <div className="relative flex justify-center text-xs uppercase tracking-widest">
-                            <span className="bg-[#050505]/50 backdrop-blur-sm px-2 text-zinc-600">O Email</span>
+                            <span className="bg-[#0a0a0a] px-2 text-zinc-500">O con Email</span>
                         </div>
                     </div>
 
-
-
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="text-zinc-400 text-xs uppercase tracking-wider font-semibold ml-1">Email</Label>
-                            <div className="relative group/input transition-all duration-300 focus-within:ring-2 focus-within:ring-violet-500/50 focus-within:shadow-[0_0_20px_-4px_rgba(139,92,246,0.3)] rounded-xl bg-zinc-900/40 border border-white/5 overflow-hidden">
-                                <div className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center">
-                                    <Mail className="text-zinc-600 group-focus-within/input:text-violet-400 transition-colors" size={18} />
+                            <Label htmlFor="email" className="text-zinc-300 text-xs uppercase tracking-wider font-semibold ml-1">Email</Label>
+                            <div className="relative group/input">
+                                <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center pointer-events-none">
+                                    <Mail className="text-zinc-500 group-focus-within/input:text-violet-400 transition-colors" size={16} />
                                 </div>
                                 <Input
                                     id="email"
                                     name="email"
                                     type="email"
                                     placeholder="hola@ejemplo.com"
-                                    className="h-12 pl-12 bg-transparent border-0 text-white placeholder:text-zinc-700 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="h-10 pl-10 bg-white/5 border-white/5 text-white text-sm placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-violet-500/50 focus-visible:border-violet-500/50 rounded-xl transition-all duration-300"
                                     required
                                 />
                             </div>
@@ -114,42 +94,42 @@ export default function Login() {
 
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                                <Label htmlFor="password" className="text-zinc-400 text-xs uppercase tracking-wider font-semibold ml-1">Contraseña</Label>
+                                <Label htmlFor="password" className="text-zinc-300 text-xs uppercase tracking-wider font-semibold ml-1">Contraseña</Label>
                                 <Link
                                     href="#"
-                                    className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+                                    className="text-[10px] text-violet-400 hover:text-violet-300 transition-colors font-medium"
                                 >
                                     ¿Olvidaste tu contraseña?
                                 </Link>
                             </div>
-                            <div className="relative group/input transition-all duration-300 focus-within:ring-2 focus-within:ring-violet-500/50 focus-within:shadow-[0_0_20px_-4px_rgba(139,92,246,0.3)] rounded-xl bg-zinc-900/40 border border-white/5 overflow-hidden">
-                                <div className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center">
-                                    <Lock className="text-zinc-600 group-focus-within/input:text-violet-400 transition-colors" size={18} />
+                            <div className="relative group/input">
+                                <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center pointer-events-none">
+                                    <Lock className="text-zinc-500 group-focus-within/input:text-violet-400 transition-colors" size={16} />
                                 </div>
                                 <Input
                                     id="password"
                                     name="password"
                                     type="password"
                                     placeholder="••••••••"
-                                    className="h-12 pl-12 bg-transparent border-0 text-white placeholder:text-zinc-700 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="h-10 pl-10 bg-white/5 border-white/5 text-white text-sm placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-violet-500/50 focus-visible:border-violet-500/50 rounded-xl transition-all duration-300"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-4">
                             <Button
-                                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white h-12 rounded-xl transition-all duration-300 shadow-[0_0_20px_-5px_rgba(124,58,237,0.5)] hover:shadow-[0_0_25px_-5px_rgba(124,58,237,0.6)] relative overflow-hidden group/btn"
+                                className="w-full bg-violet-600 hover:bg-violet-500 text-white h-11 rounded-xl transition-all duration-300 shadow-lg shadow-violet-600/20 hover:shadow-violet-600/30 font-medium text-base relative overflow-hidden group/btn"
                                 disabled={isLoading}
                                 type="submit"
                             >
-                                <span className="relative z-10 flex items-center justify-center gap-2 font-medium">
+                                <span className="relative z-10 flex items-center justify-center gap-2">
                                     {isLoading ? (
-                                        <Loader2 className="animate-spin" size={20} />
+                                        <Loader2 className="animate-spin" size={18} />
                                     ) : (
                                         <>
                                             Ingresar
-                                            <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
+                                            <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                         </>
                                     )}
                                 </span>
@@ -157,20 +137,19 @@ export default function Login() {
                         </div>
                     </form>
 
-                    {/* Text Footer */}
-                    <div className="mt-8 text-center space-y-4">
-                        <p className="text-zinc-400">
-                            ¿No tienes una cuenta?{" "}
-                            <Link href="/auth/register" className="text-violet-400 hover:text-violet-300 font-bold hover:underline transition-all">
+                    <div className="mt-6 text-center space-y-4">
+                        <div className="text-center">
+                            <span className="text-zinc-400 text-sm">¿No tienes una cuenta?</span>
+                            <Link
+                                href="/auth/register"
+                                className="ml-2 text-violet-400 hover:text-violet-300 font-medium hover:underline transition-all"
+                            >
                                 Regístrate
                             </Link>
-                        </p>
+                        </div>
 
-                        <p className="text-zinc-500 text-xs max-w-xs mx-auto leading-relaxed">
-                            Al continuar, aceptas nuestros{" "}
-                            <Link href="#" className="text-violet-400 hover:text-violet-300 underline transition-colors">Términos de servicio</Link>
-                            {" "}y confirmas que has leído nuestra{" "}
-                            <Link href="#" className="text-violet-400 hover:text-violet-300 underline transition-colors">Política de privacidad</Link>.
+                        <p className="text-zinc-500 text-[10px] leading-relaxed px-4 pt-2 border-t border-white/5">
+                            Al ingresar, aceptas nuestros <Link href="#" className="underline hover:text-zinc-300">Términos</Link> y <Link href="#" className="underline hover:text-zinc-300">Privacidad</Link>.
                         </p>
                     </div>
                 </div>
