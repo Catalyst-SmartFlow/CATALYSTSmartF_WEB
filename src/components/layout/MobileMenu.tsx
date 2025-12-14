@@ -153,7 +153,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                             <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={onClose}>
                                 Ayuda
                             </Link>
-                            <Link href="#" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={onClose}>
+                            <Link href="/auth/login" className="text-lg font-medium text-zinc-400 hover:text-white transition-colors" onClick={onClose}>
                                 Ingresar
                             </Link>
                         </nav>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { m, useScroll, useTransform, useSpring, useMotionValue, useInView, LazyMotion, domAnimation } from "framer-motion";
 import { useRef } from "react";
 import { Zap, Brain, Rocket, MessageSquare, CalendarCheck, Users } from "lucide-react";
 
@@ -41,65 +41,71 @@ const features = [
 ];
 
 function CardVisual({ type }: { type: string }) {
-    // 1. SIMULACIÓN DE CHAT (Velocidad)
+    const ref = useRef(null);
+    const isInView = useInView(ref);
+
     // 1. SIMULACIÓN DE CHAT (Velocidad)
     if (type === "chat_simulation") {
         return (
-            <div className="h-24 w-full bg-zinc-900/50 rounded-xl overflow-hidden relative flex flex-col justify-center px-4 gap-3 border border-white/5 font-mono text-[10px]">
-                {/* Mensaje Cliente (Izquierda) */}
-                <motion.div
-                    animate={{ opacity: [0, 1, 1, 0], x: [-10, 0, 0, -10] }}
-                    transition={{ duration: 4, times: [0, 0.1, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
-                    className="self-start flex items-end gap-2 max-w-[80%]"
-                >
-                    <div className="w-5 h-5 rounded-full bg-zinc-700 flex-shrink-0" />
-                    <div className="bg-zinc-800 text-zinc-300 px-3 py-2 rounded-2xl rounded-bl-sm">
-                        Info precios?
-                    </div>
-                </motion.div>
+            <div ref={ref} className="h-24 w-full bg-zinc-900/50 rounded-xl overflow-hidden relative flex flex-col justify-center px-4 gap-3 border border-white/5 font-mono text-[10px]">
+                {isInView && (
+                    <>
+                        {/* Mensaje Cliente (Izquierda) */}
+                        <m.div
+                            animate={{ opacity: [0, 1, 1, 0], x: [-10, 0, 0, -10] }}
+                            transition={{ duration: 4, times: [0, 0.1, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
+                            className="self-start flex items-end gap-2 max-w-[80%]"
+                        >
+                            <div className="w-5 h-5 rounded-full bg-zinc-700 flex-shrink-0" />
+                            <div className="bg-zinc-800 text-zinc-300 px-3 py-2 rounded-2xl rounded-bl-sm">
+                                Info precios?
+                            </div>
+                        </m.div>
 
-                {/* Área de Respuesta (Derecha) */}
-                <div className="self-end flex flex-col items-end gap-1 max-w-[80%]">
-                    {/* Indicador de "Escribiendo..." */}
-                    <motion.div
-                        animate={{ opacity: [0, 0, 1, 1, 0, 0], scale: [0.9, 0.9, 1, 1, 0.9, 0.9] }}
-                        transition={{ duration: 4, times: [0, 0.2, 0.25, 0.35, 0.4, 1], repeat: Infinity, repeatDelay: 1 }}
-                        className="flex items-center gap-1 bg-amber-500/10 text-amber-500 px-3 py-2 rounded-2xl rounded-br-sm border border-amber-500/20 absolute bottom-3 right-4"
-                    >
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 0.6, repeat: Infinity }}
-                            className="w-1 h-1 rounded-full bg-amber-500"
-                        />
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                            className="w-1 h-1 rounded-full bg-amber-500"
-                        />
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                            className="w-1 h-1 rounded-full bg-amber-500"
-                        />
-                    </motion.div>
+                        {/* Área de Respuesta (Derecha) */}
+                        <div className="self-end flex flex-col items-end gap-1 max-w-[80%]">
+                            {/* Indicador de "Escribiendo..." */}
+                            <m.div
+                                animate={{ opacity: [0, 0, 1, 1, 0, 0], scale: [0.9, 0.9, 1, 1, 0.9, 0.9] }}
+                                transition={{ duration: 4, times: [0, 0.2, 0.25, 0.35, 0.4, 1], repeat: Infinity, repeatDelay: 1 }}
+                                className="flex items-center gap-1 bg-amber-500/10 text-amber-500 px-3 py-2 rounded-2xl rounded-br-sm border border-amber-500/20 absolute bottom-3 right-4"
+                            >
+                                <m.div
+                                    animate={{ scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 0.6, repeat: Infinity }}
+                                    className="w-1 h-1 rounded-full bg-amber-500"
+                                />
+                                <m.div
+                                    animate={{ scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                                    className="w-1 h-1 rounded-full bg-amber-500"
+                                />
+                                <m.div
+                                    animate={{ scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                                    className="w-1 h-1 rounded-full bg-amber-500"
+                                />
+                            </m.div>
 
-                    {/* Mensaje Final IA */}
-                    <motion.div
-                        animate={{ opacity: [0, 0, 0, 0, 1, 1, 0], scale: [0.95, 0.95, 0.95, 0.95, 1, 1, 0.95] }}
-                        transition={{ duration: 4, times: [0, 0.4, 0.4, 0.4, 0.45, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
-                        className="flex items-end gap-2"
-                    >
-                        <div className="bg-amber-500 text-black px-3 py-2 rounded-2xl rounded-br-sm shadow-lg shadow-amber-500/20">
-                            <span className="flex items-center gap-2 font-bold">
-                                <Zap className="w-3 h-3 text-black fill-black" />
-                                ¡Hola! Te envío el catálogo...
-                            </span>
+                            {/* Mensaje Final IA */}
+                            <m.div
+                                animate={{ opacity: [0, 0, 0, 0, 1, 1, 0], scale: [0.95, 0.95, 0.95, 0.95, 1, 1, 0.95] }}
+                                transition={{ duration: 4, times: [0, 0.4, 0.4, 0.4, 0.45, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
+                                className="flex items-end gap-2"
+                            >
+                                <div className="bg-amber-500 text-black px-3 py-2 rounded-2xl rounded-br-sm shadow-lg shadow-amber-500/20">
+                                    <span className="flex items-center gap-2 font-bold">
+                                        <Zap className="w-3 h-3 text-black fill-black" />
+                                        ¡Hola! Te envío el catálogo...
+                                    </span>
+                                </div>
+                                <div className="w-5 h-5 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center">
+                                    <Zap className="w-3 h-3 text-white" />
+                                </div>
+                            </m.div>
                         </div>
-                        <div className="w-5 h-5 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center">
-                            <Zap className="w-3 h-3 text-white" />
-                        </div>
-                    </motion.div>
-                </div>
+                    </>
+                )}
             </div>
         );
     }
@@ -107,64 +113,68 @@ function CardVisual({ type }: { type: string }) {
     // 2. SIMULACIÓN DE FLUJO / CALENDARIO (Lógica)
     if (type === "logic_flow") {
         return (
-            <div className="h-24 w-full bg-zinc-900/50 rounded-xl overflow-hidden relative flex items-center justify-between px-6 border border-white/5">
-                {/* Input (Message) */}
-                <motion.div
-                    animate={{ scale: [1, 1.1, 1], filter: ["grayscale(100%)", "grayscale(0%)", "grayscale(100%)"] }}
-                    transition={{ duration: 4, times: [0, 0.1, 1], repeat: Infinity, repeatDelay: 1 }}
-                    className="h-10 w-10 index-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center relative z-10"
-                >
-                    <MessageSquare className="w-5 h-5 text-zinc-400" />
-                    {/* Pulse Effect */}
-                    <motion.div
-                        animate={{ opacity: [0, 0.5, 0], scale: [1, 1.5, 1.5] }}
-                        transition={{ duration: 4, times: [0, 0.1, 0.5], repeat: Infinity, repeatDelay: 1 }}
-                        className="absolute inset-0 rounded-xl bg-violet-500/30"
-                    />
-                </motion.div>
+            <div ref={ref} className="h-24 w-full bg-zinc-900/50 rounded-xl overflow-hidden relative flex items-center justify-between px-6 border border-white/5">
+                {isInView && (
+                    <>
+                        {/* Input (Message) */}
+                        <m.div
+                            animate={{ scale: [1, 1.1, 1], filter: ["grayscale(100%)", "grayscale(0%)", "grayscale(100%)"] }}
+                            transition={{ duration: 4, times: [0, 0.1, 1], repeat: Infinity, repeatDelay: 1 }}
+                            className="h-10 w-10 index-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center relative z-10"
+                        >
+                            <MessageSquare className="w-5 h-5 text-zinc-400" />
+                            {/* Pulse Effect */}
+                            <m.div
+                                animate={{ opacity: [0, 0.5, 0], scale: [1, 1.5, 1.5] }}
+                                transition={{ duration: 4, times: [0, 0.1, 0.5], repeat: Infinity, repeatDelay: 1 }}
+                                className="absolute inset-0 rounded-xl bg-violet-500/30"
+                            />
+                        </m.div>
 
-                {/* Connection Line */}
-                <div className="flex-1 h-[2px] bg-zinc-800 mx-4 relative overflow-hidden rounded-full">
-                    {/* Traveling Dot */}
-                    <motion.div
-                        animate={{ x: ["-100%", "200%"] }}
-                        transition={{ duration: 4, times: [0.1, 0.4], ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
-                        className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-violet-500 to-transparent blur-[1px]"
-                    />
-                </div>
+                        {/* Connection Line */}
+                        <div className="flex-1 h-[2px] bg-zinc-800 mx-4 relative overflow-hidden rounded-full">
+                            {/* Traveling Dot */}
+                            <m.div
+                                animate={{ x: ["-100%", "200%"] }}
+                                transition={{ duration: 4, times: [0.1, 0.4], ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
+                                className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-violet-500 to-transparent blur-[1px]"
+                            />
+                        </div>
 
-                {/* Output (Calendar) */}
-                <div className="relative z-10">
-                    <motion.div
-                        animate={{
-                            scale: [1, 1, 1.1, 1],
-                            rotate: [0, 0, -5, 5, 0],
-                            borderColor: ["rgba(139, 92, 246, 0.2)", "rgba(139, 92, 246, 0.2)", "rgba(139, 92, 246, 1)", "rgba(139, 92, 246, 0.5)"]
-                        }}
-                        transition={{ duration: 4, times: [0, 0.4, 0.45, 0.55, 1], repeat: Infinity, repeatDelay: 1 }}
-                        className="h-10 w-10 index-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center"
-                    >
-                        <CalendarCheck className="w-5 h-5 text-violet-400" />
-                    </motion.div>
+                        {/* Output (Calendar) */}
+                        <div className="relative z-10">
+                            <m.div
+                                animate={{
+                                    scale: [1, 1, 1.1, 1],
+                                    rotate: [0, 0, -5, 5, 0],
+                                    borderColor: ["rgba(139, 92, 246, 0.2)", "rgba(139, 92, 246, 0.2)", "rgba(139, 92, 246, 1)", "rgba(139, 92, 246, 0.5)"]
+                                }}
+                                transition={{ duration: 4, times: [0, 0.4, 0.45, 0.55, 1], repeat: Infinity, repeatDelay: 1 }}
+                                className="h-10 w-10 index-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center"
+                            >
+                                <CalendarCheck className="w-5 h-5 text-violet-400" />
+                            </m.div>
 
-                    {/* Notification Badge */}
-                    <motion.div
-                        animate={{ scale: [0, 0, 1, 1, 0], opacity: [0, 0, 1, 1, 0] }}
-                        transition={{ duration: 4, times: [0, 0.45, 0.5, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
-                        className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center border border-zinc-900"
-                    >
-                        <span className="text-[8px] font-bold text-white">1</span>
-                    </motion.div>
+                            {/* Notification Badge */}
+                            <m.div
+                                animate={{ scale: [0, 0, 1, 1, 0], opacity: [0, 0, 1, 1, 0] }}
+                                transition={{ duration: 4, times: [0, 0.45, 0.5, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
+                                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center border border-zinc-900"
+                            >
+                                <span className="text-[8px] font-bold text-white">1</span>
+                            </m.div>
 
-                    {/* Tooltip Label - Positioned Left to avoid clipping */}
-                    <motion.div
-                        animate={{ opacity: [0, 0, 1, 1, 0], x: [10, 0, 0, 10] }}
-                        transition={{ duration: 4, times: [0, 0.45, 0.5, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
-                        className="absolute top-1/2 -translate-y-1/2 right-[130%] text-[9px] font-bold bg-violet-500 text-white px-2 py-0.5 rounded-full whitespace-nowrap shadow-lg shadow-violet-500/20"
-                    >
-                        Agendado!
-                    </motion.div>
-                </div>
+                            {/* Tooltip Label - Positioned Left to avoid clipping */}
+                            <m.div
+                                animate={{ opacity: [0, 0, 1, 1, 0], x: [10, 0, 0, 10] }}
+                                transition={{ duration: 4, times: [0, 0.45, 0.5, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}
+                                className="absolute top-1/2 -translate-y-1/2 right-[130%] text-[9px] font-bold bg-violet-500 text-white px-2 py-0.5 rounded-full whitespace-nowrap shadow-lg shadow-violet-500/20"
+                            >
+                                Agendado!
+                            </m.div>
+                        </div>
+                    </>
+                )}
             </div>
         );
     }
@@ -172,86 +182,79 @@ function CardVisual({ type }: { type: string }) {
     // 3. SIMULACIÓN DE MULTITASKING (Escala)
     if (type === "multi_task") {
         return (
-            <div className="h-24 w-full bg-zinc-900/50 rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center p-0">
-
-                {/* SVG System */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <defs>
-                        {/* Glow Filter for the beams */}
-                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="1" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                    </defs>
-
-                    {/* BACKGROUND TRACKS (Roads) - Lighter color: zinc-700 (#3f3f46) */}
-                    <g stroke="#52525b" strokeWidth="2" fill="none" opacity="0.5">
-                        {/* Inputs */}
-                        <path d="M 0 35 Q 25 35, 48 48" vectorEffect="non-scaling-stroke" />
-                        <path d="M 0 65 Q 25 65, 48 52" vectorEffect="non-scaling-stroke" />
-                        {/* Outputs */}
-                        <path d="M 52 48 Q 75 25, 100 25" vectorEffect="non-scaling-stroke" />
-                        <path d="M 52 50 Q 75 40, 100 40" vectorEffect="non-scaling-stroke" />
-                        <path d="M 52 50 Q 75 60, 100 60" vectorEffect="non-scaling-stroke" />
-                        <path d="M 52 52 Q 75 75, 100 75" vectorEffect="non-scaling-stroke" />
-                    </g>
-
-                    {/* ANIMATED BEAMS (Overlay Paths) */}
-                    <g stroke="#06b6d4" strokeWidth="2" fill="none" filter="url(#glow)">
-                        {/* Input Beams */}
-                        <motion.path
-                            d="M 0 35 Q 25 35, 48 48"
-                            pathLength="1"
-                            strokeDasharray="0.3 1"
-                            strokeDashoffset="1.3"
-                            animate={{ strokeDashoffset: 0 }}
-                            transition={{ duration: 1.5, ease: "linear", repeat: Infinity }}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                        <motion.path
-                            d="M 0 65 Q 25 65, 48 52"
-                            pathLength="1"
-                            strokeDasharray="0.3 1"
-                            strokeDashoffset="1.3"
-                            animate={{ strokeDashoffset: 0 }}
-                            transition={{ duration: 1.5, ease: "linear", repeat: Infinity, delay: 0.75 }}
-                            vectorEffect="non-scaling-stroke"
-                        />
-
-                        {/* Output Beams */}
-                        {[
-                            { d: "M 52 48 Q 75 25, 100 25", delay: 0 },
-                            { d: "M 52 50 Q 75 40, 100 40", delay: 0.15 },
-                            { d: "M 52 50 Q 75 60, 100 60", delay: 0.3 },
-                            { d: "M 52 52 Q 75 75, 100 75", delay: 0.45 }
-                        ].map((path, i) => (
-                            <motion.path
-                                key={i}
-                                d={path.d}
-                                pathLength="1"
-                                strokeDasharray="0.3 1"
-                                strokeDashoffset="1.3"
-                                animate={{ strokeDashoffset: 0 }}
-                                transition={{ duration: 0.8, ease: "linear", repeat: Infinity, delay: path.delay }}
-                                vectorEffect="non-scaling-stroke" // Keeps line width consistent despite non-uniform scaling
+            <div ref={ref} className="h-24 w-full bg-zinc-900/50 rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center p-0">
+                {isInView && (
+                    <>
+                        {/* SVG System */}
+                        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <defs>
+                                {/* Glow Filter for the beams */}
+                                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="1" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                            </defs>
+                            {/* BACKGROUND TRACKS (Roads) - Lighter color: zinc-700 (#3f3f46) */}
+                            <g stroke="#52525b" strokeWidth="2" fill="none" opacity="0.5">
+                                <path d="M 0 35 Q 25 35, 48 48" vectorEffect="non-scaling-stroke" />
+                                <path d="M 0 65 Q 25 65, 48 52" vectorEffect="non-scaling-stroke" />
+                                <path d="M 52 48 Q 75 25, 100 25" vectorEffect="non-scaling-stroke" />
+                                <path d="M 52 50 Q 75 40, 100 40" vectorEffect="non-scaling-stroke" />
+                                <path d="M 52 50 Q 75 60, 100 60" vectorEffect="non-scaling-stroke" />
+                                <path d="M 52 52 Q 75 75, 100 75" vectorEffect="non-scaling-stroke" />
+                            </g>
+                            {/* ANIMATED BEAMS (Overlay Paths) */}
+                            <g stroke="#06b6d4" strokeWidth="2" fill="none" filter="url(#glow)">
+                                <m.path
+                                    d="M 0 35 Q 25 35, 48 48"
+                                    pathLength="1"
+                                    strokeDasharray="0.3 1"
+                                    strokeDashoffset="1.3"
+                                    animate={{ strokeDashoffset: 0 }}
+                                    transition={{ duration: 1.5, ease: "linear", repeat: Infinity }}
+                                    vectorEffect="non-scaling-stroke"
+                                />
+                                <m.path
+                                    d="M 0 65 Q 25 65, 48 52"
+                                    pathLength="1"
+                                    strokeDasharray="0.3 1"
+                                    strokeDashoffset="1.3"
+                                    animate={{ strokeDashoffset: 0 }}
+                                    transition={{ duration: 1.5, ease: "linear", repeat: Infinity, delay: 0.75 }}
+                                    vectorEffect="non-scaling-stroke"
+                                />
+                                {[
+                                    { d: "M 52 48 Q 75 25, 100 25", delay: 0 },
+                                    { d: "M 52 50 Q 75 40, 100 40", delay: 0.15 },
+                                    { d: "M 52 50 Q 75 60, 100 60", delay: 0.3 },
+                                    { d: "M 52 52 Q 75 75, 100 75", delay: 0.45 }
+                                ].map((path, i) => (
+                                    <m.path
+                                        key={i}
+                                        d={path.d}
+                                        pathLength="1"
+                                        strokeDasharray="0.3 1"
+                                        strokeDashoffset="1.3"
+                                        animate={{ strokeDashoffset: 0 }}
+                                        transition={{ duration: 0.8, ease: "linear", repeat: Infinity, delay: path.delay }}
+                                        vectorEffect="non-scaling-stroke"
+                                    />
+                                ))}
+                            </g>
+                        </svg>
+                        {/* CENTRAL NODE */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black border border-cyan-500/50 rounded-lg flex items-center justify-center z-10 shadow-[0_0_20px_rgba(6,182,212,0.3)] overflow-hidden">
+                            <img
+                                src="/catalystLogos/ICONOGRAFIA/SVG/catalystIconografiaFondoNegro_backup.svg"
+                                alt="Catalyst Core"
+                                className="w-full h-full object-cover scale-[2.5]"
                             />
-                        ))}
-                    </g>
-                </svg>
-
-                {/* CENTRAL NODE */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black border border-cyan-500/50 rounded-lg flex items-center justify-center z-10 shadow-[0_0_20px_rgba(6,182,212,0.3)] overflow-hidden">
-                    <img
-                        src="/catalystLogos/ICONOGRAFIA/SVG/catalystIconografiaFondoNegro_backup.svg"
-                        alt="Catalyst Core"
-                        className="w-full h-full object-cover scale-[2.5]"
-                    />
-                </div>
-
-                {/* LABELS */}
-                <div className="absolute top-2 left-3 text-[9px] text-zinc-500 font-mono">IN: 2 THREADS</div>
-                <div className="absolute bottom-2 right-3 text-[9px] text-cyan-400 font-mono font-bold">OUT: 4X SCALE</div>
-
+                        </div>
+                        {/* LABELS */}
+                        <div className="absolute top-2 left-3 text-[9px] text-zinc-500 font-mono">IN: 2 THREADS</div>
+                        <div className="absolute bottom-2 right-3 text-[9px] text-cyan-400 font-mono font-bold">OUT: 4X SCALE</div>
+                    </>
+                )}
             </div>
         );
     }
@@ -348,13 +351,13 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
     }
 
     return (
-        <motion.div
+        <m.div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
             style={{ opacity, scale, x, y, perspective: 1000 }}
             className={`absolute w-full max-w-xl md:max-w-2xl px-4 ${feature.position === "center" ? "z-20 md:scale-110" : "z-10"}`}
         >
-            <motion.div
-                onMouseMove={handleMouseMove}
-                onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
+            <m.div
                 style={{
                     rotateX: useTransform(mouseY, [-300, 300], [2, -2]), // Reducido para ser menos mareante
                     rotateY: useTransform(mouseX, [-300, 300], [-2, 2]),
@@ -401,8 +404,8 @@ function FeatureCard({ feature, scrollYProgress, index }: { feature: any, scroll
                         <CardVisual type={feature.visual} />
                     </div>
                 </div>
-            </motion.div>
-        </motion.div>
+            </m.div>
+        </m.div>
     );
 }
 
@@ -444,7 +447,7 @@ export default function InvisibleWorkforceV3() {
             <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
 
                 {/* Header Section - Intro Animation */}
-                <motion.div
+                <m.div
                     style={{
                         opacity: titleOpacity,
                         x: titleX,
@@ -458,7 +461,7 @@ export default function InvisibleWorkforceV3() {
                     <p className="text-lg md:text-2xl text-zinc-400 font-light max-w-4xl mx-auto tracking-wide">
                         Por qué tu competencia seguirá operando lento y tú no.
                     </p>
-                </motion.div>
+                </m.div>
 
 
                 {/* Fondo Técnico - Grid sutil */}
@@ -469,7 +472,7 @@ export default function InvisibleWorkforceV3() {
                 {/* Línea conectora - Representa el "Cableado" de n8n */}
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-30 flex justify-center">
                     <svg className="h-full w-px overflow-visible">
-                        <motion.path
+                        <m.path
                             d="M 0 0 V 10000" // Línea vertical larga
                             stroke="url(#gradient-line)"
                             strokeWidth="2"
@@ -499,19 +502,19 @@ export default function InvisibleWorkforceV3() {
                 </div>
 
                 {/* Scroll Indicator */}
-                <motion.div
+                <m.div
                     style={{ opacity: useTransform(scrollYProgress, [0.8, 0.9], [1, 0]) }}
                     className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-zinc-500 text-[10px] font-mono uppercase tracking-widest"
                 >
                     <div className="relative w-[1px] h-12 bg-zinc-800 overflow-hidden">
-                        <motion.div
+                        <m.div
                             animate={{ y: ["-100%", "100%"] }}
                             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                             className="absolute inset-0 bg-white/50"
                         />
                     </div>
                     Ver el sistema en acción
-                </motion.div>
+                </m.div>
             </div>
         </section>
     );

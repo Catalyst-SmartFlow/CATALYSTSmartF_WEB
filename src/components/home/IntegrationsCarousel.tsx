@@ -6,7 +6,10 @@ import {
     useMotionValue,
     useTransform,
     useAnimationFrame,
-    useInView
+    useInView,
+    useScroll,
+    useVelocity,
+    useSpring
 } from "framer-motion";
 import Image from "next/image";
 
@@ -50,6 +53,8 @@ function IntegrationLogo({ integration }: { integration: typeof integrations[0] 
                         src={integration.src}
                         alt={integration.name}
                         fill
+                        loading="lazy"
+                        sizes="(max-width: 768px) 150px, 200px"
                         className="object-contain"
                     />
                 </div>
@@ -63,16 +68,46 @@ function IntegrationLogo({ integration }: { integration: typeof integrations[0] 
 
 function ParallaxText({ children, baseVelocity = 100 }: { children: React.ReactNode; baseVelocity: number }) {
     const baseX = useMotionValue(0);
+    const { scrollY } = useScroll();
+    const scrollVelocity = useVelocity(scrollY);
+    const smoothVelocity = useSpring(scrollVelocity, {
+        damping: 50,
+        stiffness: 400
+    });
+    const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
+        clamp: false
+    });
+
     const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
 
     const directionFactor = useRef<number>(1);
+
+    // Optimization: Only animate when in view
+    const ref = useRef(null);
+    const isInView = useInView(ref);
+
     useAnimationFrame((t, delta) => {
+        if (!isInView) return; // Stop animation loop when out of view
+
         let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
+
+        /**
+         * This is what changes the direction of the scroll once we
+         * switch scrolling directions.
+         */
+        if (velocityFactor.get() < 0) {
+            directionFactor.current = -1;
+        } else if (velocityFactor.get() > 0) {
+            directionFactor.current = 1;
+        }
+
+        moveBy += directionFactor.current * moveBy * velocityFactor.get();
+
         baseX.set(baseX.get() + moveBy);
     });
 
     return (
-        <div className="parallax overflow-hidden flex flex-nowrap m-0 whitespace-nowrap">
+        <div ref={ref} className="parallax overflow-hidden flex flex-nowrap m-0 whitespace-nowrap">
             <motion.div className="scroller flex flex-nowrap whitespace-nowrap" style={{ x }}>
                 {children}
                 {children}
