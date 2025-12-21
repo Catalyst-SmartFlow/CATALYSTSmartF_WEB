@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/layout/Providers";
 import { Toaster } from "sonner";
+import ChatWidget from "@/components/chat/ChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
                 <Providers>
                     {children}
                     <Toaster richColors position="top-right" />
+                    <ChatWidget />
                 </Providers>
             </body>
         </html>
