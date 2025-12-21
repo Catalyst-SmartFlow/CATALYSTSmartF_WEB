@@ -34,6 +34,8 @@ export default function FinalCTA() {
 
             {/* Seamless transition gradient at the top */}
             <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#000101] to-transparent z-10 pointer-events-none" />
+            {/* Seamless transition gradient at the bottom */}
+            <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#000000] to-transparent z-10 pointer-events-none" />
 
             <div className="container relative z-10 px-4 md:px-6 mx-auto text-center">
                 
