@@ -9,6 +9,8 @@ const SalesTeamHeadline = dynamic(() => import("@/components/home/SalesTeamHeadl
 const SalesProblem = dynamic(() => import("@/components/home/SalesProblem").then(mod => mod.SalesProblem));
 const IntegrationsCarousel = dynamic(() => import("@/components/home/IntegrationsCarousel"));
 const MobileFeatures = dynamic(() => import("@/components/trash/MobileFeatures"));
+const FAQ = dynamic(() => import("@/components/home/FAQ"));
+const FinalCTA = dynamic(() => import("@/components/home/FinalCTA"));
 const Footer = dynamic(() => import("@/components/layout/Footer"));
 
 export default function Home() {
@@ -44,6 +46,12 @@ export default function Home() {
 
             {/* Sección de Catalyst Advantage */}
             <CatalystAdvantage />
+
+            {/* Sección de FAQ */}
+            <FAQ />
+
+            {/* Sección Final CTA */}
+            <FinalCTA />
 
             <Footer />
         </main>
